@@ -32,16 +32,18 @@ int read_int(const char* tempFile){
 
 void firewall_is_connected(){
 	// Make command for Counting lines from drop ports in iptables
-	const char * cmd = "sudo iptables -L -n | grep -e dpt | grep DROP | wc -l > temp";
+	const char * cmd = "sudo iptables -L -n | grep -A 18 \"Chain INPUT\" | wc -l > temp";
 	// Run command
 	system(cmd);
 	const char* temp="temp";
 	int lines = read_int(temp);
 	// Check if there are some ports drop
-	if (lines>0){
+	if (lines==19){
 		printf("Firewall is enabled\n");
 	}else{
-		printf("Firewall is disabled\n");
+		if (lines==8){
+			printf("Firewall is disabled\n");
+		}
 	}
 }
 
