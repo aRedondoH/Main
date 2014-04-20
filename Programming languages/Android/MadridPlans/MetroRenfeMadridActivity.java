@@ -48,6 +48,8 @@ public class MetroRenfeMadridActivity extends Activity  {
 	private Button botonEntrar;
 	
     RelativeLayout rl;
+    
+    static MetroRenfeMadridActivity ma;
    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,6 +84,10 @@ public class MetroRenfeMadridActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        ma=this;
+          
+        
+        
        botonEntrar = (Button) findViewById(R.id.botonEntrar);
        rl = (RelativeLayout) findViewById(R.id.relativeLayout1);
        
@@ -99,21 +105,19 @@ public class MetroRenfeMadridActivity extends Activity  {
         	
         public void onClick(View v) {
 							
-        	//Intent myIntent = new Intent(MetroRenfeMadridActivity.this,MainScreenActivity.class);
-        	//startActivity(myIntent);
         	
-        	// Device model
-        	String PhoneModel = android.os.Build.MODEL;
-
-        	// Android version
-        	String AndroidVersion = android.os.Build.VERSION.RELEASE;
+        	
+        	
         	
         	try {   
                 GMailSender sender = new GMailSender("albert.eagle.uni@gmail.com", "arh217956arh");
                 sender.sendMail("This is a test",   
-                        "Phone model "+PhoneModel+" Android version "+AndroidVersion,   
+                        "",   
                         "paco@gmail.com",   
                         "albert.eagle.uni@gmail.com");   
+                
+              Intent myIntent = new Intent(MetroRenfeMadridActivity.this,MainScreenActivity.class);
+              startActivity(myIntent);
             } catch (Exception e) {   
                 Log.e("SendMail", e.getMessage(), e);   
             } 
