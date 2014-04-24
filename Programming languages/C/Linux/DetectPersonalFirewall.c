@@ -15,7 +15,7 @@
 
 int read_int(const char* tempFile){
 	// Open file
-	FILE* file = fopen(tempFile, "r");
+	FILE* file = fopen(tempFile, "rb");
 	int i=0;
 	// Read int from file
 	fscanf (file, "%d", &i);
@@ -42,9 +42,16 @@ void firewall_is_connected(){
 }
 
 int main(void) {
-	printf("we are going to check if the firewall is switch on/off: \n");
+
+	// Open file
+		FILE* file = fopen("temp", "ab+");
+	// Give file permissions
+		system("chmod 777 temp");
+
+		printf("we are going to check if the firewall is switch on/off: \n");
+
 	// Check if the firewall is on/off
-	firewall_is_connected();
+		firewall_is_connected();
 	// Remove temp file
-	system("rm temp");
+	    system("rm temp");
 }
