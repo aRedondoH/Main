@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
    
    }
 
-	printf("The letters have changed");
+	printf("The letters have changed successfully");
 
   return 0;
 }
