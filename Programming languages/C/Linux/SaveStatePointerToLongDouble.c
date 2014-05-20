@@ -11,11 +11,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void second(int** loadv2){
+	**loadv2=**loadv2+30;
 
+}
 void is_cpu_state_change(int* previous_load){
 
 	printf("The last cpu load inside the function %d\n", *previous_load);
 	*previous_load=*previous_load+50;
+	second(&previous_load);
+	printf("Should be work: %d\n", *previous_load);
 }
 
 
