@@ -3,6 +3,13 @@
 #include<VersionHelpers.h>
 #include<stdlib.h>
 
+/* Processes includes */
+#include <tlhelp32.h>
+#include <tchar.h>
+#include <iostream>
+#include <clocale>
+#include <cstdlib>
+
 /* Get currently OS */
 void getWindowsVersion(){
 	if (IsWindowsXPOrGreater() && !IsWindowsXPSP1OrGreater()){
@@ -69,12 +76,12 @@ void getOpenPorts(){
 	strcpy(str4, "No");
 
 	/* Read the output a line at a time - output it. */
-	while (fgets(portsOutput, 300, fp) != NULL) {		
+	while (fgets(portsOutput, 300, fp) != NULL) {
 		strcpy(portsOutputCopy, portsOutput); // copy of portsOutput
 		token = strtok_s(portsOutputCopy, " ", &next_token);
 		strcpy(str1, token);
 		/* if it find the word "IMPORTANT:" or " " it doesn't print any more*/
-		int ret = strcmp(str1, str2);		
+		int ret = strcmp(str1, str2);
 		if (ret == 0){
 			dontPrintAnyMore = 1;
 		}
@@ -93,28 +100,52 @@ void getOpenPorts(){
 		}
 
 		/* print output for our purpose */
-		if ((count > 13) && (dontPrintAnyMore != 1) && (noPortsOpen!=1)){
+		if ((count > 13) && (dontPrintAnyMore != 1) && (noPortsOpen != 1)){
 			printf("Port open: %d\n", portOpen);
 		}
-		
+
 		count++; // counting lines from the tempFirewallOutput
 	}
 	if (noPortsOpen == 1){
 		printf("No ports are currently open\n");
 	}
 	fclose(fp);
-	//system("del tempFirewallOutput.txt");
+	printf("\n");
+}
+
+void getAllProcessesRunning(){
+	bool exists = false;
+	PROCESSENTRY32 process;
+	DWORD pid = 0;
+
+	process.dwSize = sizeof(PROCESSENTRY32);
+	// Get snapshot of the current windows status 
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+	printf("Processes running: \n");
+	// Get processes running and their pid
+	if (Process32First(snapshot, &process)){
+		while (Process32Next(snapshot, &process)){
+			pid = process.th32ProcessID;
+			printf("%ls with pid: %ld\n", process.szExeFile, pid);
+		}
+	}
+	CloseHandle(snapshot);
+
 }
 
 void audit(){
+	printf("--------- Audit ---------------\n\n");
 	/* Get Windows version */
 	getWindowsVersion();
 	/* Get Open ports*/
 	getOpenPorts();
+	/* Get all processes running */
+	getAllProcessesRunning();
+	printf("\n-------------------------------\n");
 }
 
 int __cdecl wmain(__in int argc, __in_ecount(argc) PCWSTR argv[])
 {
 	audit();
-	
 }
