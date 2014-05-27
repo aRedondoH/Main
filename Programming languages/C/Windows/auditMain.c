@@ -9,6 +9,8 @@
 #include <iostream>
 #include <clocale>
 #include <cstdlib>
+#include <comdef.h> //new
+#include <wchar.h>
 
 /* Get currently OS */
 void getWindowsVersion(){
@@ -112,11 +114,14 @@ void getOpenPorts(){
 	fclose(fp);
 	printf("\n");
 }
-
+/* Get all the process running */
 void getAllProcessesRunning(){
 	bool exists = false;
 	PROCESSENTRY32 process;
+	WCHAR wc[200];
 	DWORD pid = 0;
+	char cpid[10];
+
 
 	process.dwSize = sizeof(PROCESSENTRY32);
 	// Get snapshot of the current windows status 
@@ -127,11 +132,24 @@ void getAllProcessesRunning(){
 	if (Process32First(snapshot, &process)){
 		while (Process32Next(snapshot, &process)){
 			pid = process.th32ProcessID;
-			printf("%ls with pid: %ld\n", process.szExeFile, pid);
+
+			/* Making a wchar msg */
+			ua_wcscpy_s(wc, 200, process.szExeFile);
+			wcscat_s(wc, 200, L" with pid: ");
+			/* Convert wchar msg to char* */
+			_bstr_t b(wc);
+			/* Convert dword to char* */
+			sprintf(cpid, "%d", pid);
+			/* Concatenate strings */
+			char msgOutput[210];
+			strcpy_s(msgOutput, 210, b);
+			strcat_s(msgOutput, 210, cpid);
+
+			printf("%s\n", msgOutput);
+			
 		}
 	}
 	CloseHandle(snapshot);
-
 }
 
 void audit(){
@@ -147,5 +165,9 @@ void audit(){
 
 int __cdecl wmain(__in int argc, __in_ecount(argc) PCWSTR argv[])
 {
-	audit();
+	for (;;){
+		audit();
+		//Sleep(1000);
+	}
+	
 }
