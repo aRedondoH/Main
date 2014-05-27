@@ -17,21 +17,22 @@ import android.widget.Toast;
 public class gestionlineasbus extends ListActivity{	
 		public void onCreate(Bundle icicle) {
 			super.onCreate(icicle);
-			String[] values = new String[] { "01: PGNO.NORTE - GLORIETA PLUS ULTRA",
+			String[] values = new String[] { 
+					"01: PGNO.NORTE - GLORIETA PLUS ULTRA",
 					"02: BARQUETA - GLORIETA HELIOPOLIS",
 					"05: PUERTA TRIANA - SANTA AURELIA",
 					"06: SAN LAZARO - GLORIETA HELIOPOLIS",
-					"10: PONCE DE LEÓN - SAN JERÓNIMO",
-					"11: PONCE DE LEÓN - LOS PRINCIPES",
-					"12: PONCE DE LEÓN - PINO MONTANO",					
+					"10: PONCE DE LEON - SAN JERONIMO",
+					"11: PONCE DE LEON - LOS PRINCIPES",
+					"12: PONCE DE LEON - PINO MONTANO",					
 					"13: PLAZA DUQUE - PINO MONTANO",
 					"14: PLAZA DUQUE - POLIGONO NORTE",
-					"15: PONCE DE LEÓN - SAN DIEGO",
+					"15: PONCE DE LEON - SAN DIEGO",
 					"16: PZA.JERON.CORDOBA - VALDEZORRAS",
-					"20: PONCE DE LEÓN - PGNO. SAN PABLO",
+					"20: PONCE DE LEON - PGNO. SAN PABLO",
 					"21: PRADO - POLIGONO SAN PABLO",
 					"22: PRADO - SEVILLA ESTE",
-					"24: PONCE DE LEÓN - PALMETE",
+					"24: PONCE DE LEON - PALMETE",
 					"25: PRADO - ROCHELAMBERT",
 					"26: PRADO - CERRO DEL AGUILA",
 					"27: PLAZA DEL DUQUE - SEVILLA ESTE",
@@ -46,7 +47,7 @@ public class gestionlineasbus extends ListActivity{
 					"39: LOS ARCOS-HACIENDA SAN ANTONIO",
 					"40: PLAZA MAGDALENA - TRIANA",
 					"41: PLAZA MAGDALENA - TABLADA",
-					"43: PLAZA MAGDALENA - EL TURRUÑUELO",
+					"43: PLAZA MAGDALENA - EL TURRUOUELO",
 					"52: SAN BERNARDO - PALMETE",
 					"B3: GRAN PLAZA - SANTA CLARA",
 					"B4: GRAN PLAZA - TORREBLANCA",
@@ -55,7 +56,7 @@ public class gestionlineasbus extends ListActivity{
 					"C3-C4: BARQUETA - PRADO",
 					"C5: PLAZA S. FRANCISCO - PLAZA DUQUE",
 					"EA: PRADO - AEROPUERTO",
-					"C6: SAN JERÓNIMO-VALDEZORRAS"};
+					"C6: SAN JERONIMO-VALDEZORRAS"};
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 					android.R.layout.simple_list_item_1, values);
 			//ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
