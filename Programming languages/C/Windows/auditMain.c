@@ -53,26 +53,26 @@ void getWindowsVersion(){
 /* Get currently open ports */
 void getOpenPorts(){
 	FILE *fp;
-	errno_t err;
 	char portsOutput[300];
 	char portsOutputCopy[300];
 	int count = 0;
 	char *token;
 	char *next_token;
-	char str1[30];
-	char str2[30];
-	char str3[30];
-	char str4[30];
+	char str1[100];
+	char str2[100];
+	char str3[100];
+	char str4[100];
 	int dontPrintAnyMore = 0;
 	int noPortsOpen = 0;
 	int portOpen = 0;
 
 	/* Get open ports */
-	system("netsh firewall show state > tempFirewallOutput.txt");
-	err = fopen_s(&fp, "tempFirewallOutput.txt", "r");
-	if (err != 0){
-		printf("Error %d when open file", err);
+	fp = _popen("netsh firewall show state", "rt");
+	if (fp == NULL){
+		printf("Failed to run command\n");
 	}
+
+	/* Parameters to check into the parsing algorithm */
 	strcpy(str2, "IMPORTANT:");
 	strcpy(str3, "\n");
 	strcpy(str4, "No");
@@ -80,6 +80,7 @@ void getOpenPorts(){
 	/* Read the output a line at a time - output it. */
 	while (fgets(portsOutput, 300, fp) != NULL) {
 		strcpy(portsOutputCopy, portsOutput); // copy of portsOutput
+
 		token = strtok_s(portsOutputCopy, " ", &next_token);
 		strcpy(str1, token);
 		/* if it find the word "IMPORTANT:" or " " it doesn't print any more*/
@@ -108,6 +109,7 @@ void getOpenPorts(){
 
 		count++; // counting lines from the tempFirewallOutput
 	}
+
 	if (noPortsOpen == 1){
 		printf("No ports are currently open\n");
 	}
@@ -146,7 +148,7 @@ void getAllProcessesRunning(){
 			strcat_s(msgOutput, 210, cpid);
 
 			printf("%s\n", msgOutput);
-			
+
 		}
 	}
 	CloseHandle(snapshot);
@@ -155,11 +157,11 @@ void getAllProcessesRunning(){
 void audit(){
 	printf("--------- Audit ---------------\n\n");
 	/* Get Windows version */
-	getWindowsVersion();
+	//getWindowsVersion();
 	/* Get Open ports*/
 	getOpenPorts();
 	/* Get all processes running */
-	getAllProcessesRunning();
+	//getAllProcessesRunning();
 	printf("\n-------------------------------\n");
 }
 
@@ -167,7 +169,7 @@ int __cdecl wmain(__in int argc, __in_ecount(argc) PCWSTR argv[])
 {
 	for (;;){
 		audit();
-		//Sleep(1000);
+		Sleep(2000);
 	}
-	
+
 }
