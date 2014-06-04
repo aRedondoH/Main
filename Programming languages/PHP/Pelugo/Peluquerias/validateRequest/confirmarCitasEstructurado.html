@@ -1,0 +1,16 @@
+<link href="media/system/css/botonesFashion.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="media/system/css/style.css" media="screen" rel="stylesheet" type="text/css" />
+<form action="http://www.pelugo.es/index.php/confirmar-citas-peluqueria" method="post">
+	<h1><p>Elija las citas que desea confirmar:</p></h1>
+	
+	
+	<?php include 'php_articulos/peluquerias/confirmar_citas/mostrarCitas.php';?>
+	
+	<input name="checkbox" type="radio" value="1234" />Ya tengo seguras las citas que quiero confirmar<br />
+	
+	<?php include 'php_articulos/peluquerias/confirmar_citas/confirmarCitasSeleccionadas.php';?>
+	
+
+	<p style="margin-top:1.5em">
+					
+	<input class="button large blue" type="submit" value="Confirmar citas" /></p></form>
