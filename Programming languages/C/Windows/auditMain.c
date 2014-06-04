@@ -9,6 +9,8 @@
 #include <iostream>
 #include <clocale>
 #include <cstdlib>
+#include <comdef.h> //new
+#include <wchar.h>
 
 /* Get currently OS */
 void getWindowsVersion(){
@@ -51,26 +53,26 @@ void getWindowsVersion(){
 /* Get currently open ports */
 void getOpenPorts(){
 	FILE *fp;
-	errno_t err;
 	char portsOutput[300];
 	char portsOutputCopy[300];
 	int count = 0;
 	char *token;
 	char *next_token;
-	char str1[30];
-	char str2[30];
-	char str3[30];
-	char str4[30];
+	char str1[100];
+	char str2[100];
+	char str3[100];
+	char str4[100];
 	int dontPrintAnyMore = 0;
 	int noPortsOpen = 0;
 	int portOpen = 0;
 
 	/* Get open ports */
-	system("netsh firewall show state > tempFirewallOutput.txt");
-	err = fopen_s(&fp, "tempFirewallOutput.txt", "r");
-	if (err != 0){
-		printf("Error %d when open file", err);
+	fp = _popen("netsh firewall show state", "rt");
+	if (fp == NULL){
+		printf("Failed to run command\n");
 	}
+
+	/* Parameters to check into the parsing algorithm */
 	strcpy(str2, "IMPORTANT:");
 	strcpy(str3, "\n");
 	strcpy(str4, "No");
@@ -78,6 +80,7 @@ void getOpenPorts(){
 	/* Read the output a line at a time - output it. */
 	while (fgets(portsOutput, 300, fp) != NULL) {
 		strcpy(portsOutputCopy, portsOutput); // copy of portsOutput
+
 		token = strtok_s(portsOutputCopy, " ", &next_token);
 		strcpy(str1, token);
 		/* if it find the word "IMPORTANT:" or " " it doesn't print any more*/
@@ -106,17 +109,21 @@ void getOpenPorts(){
 
 		count++; // counting lines from the tempFirewallOutput
 	}
+
 	if (noPortsOpen == 1){
 		printf("No ports are currently open\n");
 	}
 	fclose(fp);
 	printf("\n");
 }
-
+/* Get all the process running */
 void getAllProcessesRunning(){
 	bool exists = false;
 	PROCESSENTRY32 process;
+	WCHAR wc[200];
 	DWORD pid = 0;
+	char cpid[10];
+
 
 	process.dwSize = sizeof(PROCESSENTRY32);
 	// Get snapshot of the current windows status 
@@ -127,25 +134,42 @@ void getAllProcessesRunning(){
 	if (Process32First(snapshot, &process)){
 		while (Process32Next(snapshot, &process)){
 			pid = process.th32ProcessID;
-			printf("%ls with pid: %ld\n", process.szExeFile, pid);
+
+			/* Making a wchar msg */
+			ua_wcscpy_s(wc, 200, process.szExeFile);
+			wcscat_s(wc, 200, L" with pid: ");
+			/* Convert wchar msg to char* */
+			_bstr_t b(wc);
+			/* Convert dword to char* */
+			sprintf(cpid, "%d", pid);
+			/* Concatenate strings */
+			char msgOutput[210];
+			strcpy_s(msgOutput, 210, b);
+			strcat_s(msgOutput, 210, cpid);
+
+			printf("%s\n", msgOutput);
+
 		}
 	}
 	CloseHandle(snapshot);
-
 }
 
 void audit(){
 	printf("--------- Audit ---------------\n\n");
 	/* Get Windows version */
-	getWindowsVersion();
+	//getWindowsVersion();
 	/* Get Open ports*/
 	getOpenPorts();
 	/* Get all processes running */
-	getAllProcessesRunning();
+	//getAllProcessesRunning();
 	printf("\n-------------------------------\n");
 }
 
 int __cdecl wmain(__in int argc, __in_ecount(argc) PCWSTR argv[])
 {
-	audit();
+	for (;;){
+		audit();
+		Sleep(2000);
+	}
+
 }
