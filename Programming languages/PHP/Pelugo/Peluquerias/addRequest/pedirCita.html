@@ -1,0 +1,161 @@
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" /><title></title><link href="style.css" media="screen" rel="stylesheet" type="text/css" /><!-- custom theme css --><link href="themes/blue/style.css" media="screen" rel="stylesheet" type="text/css" /><link href="media/system/css/botonesFashion.css" media="screen" rel="stylesheet" type="text/css" /><script src="media/system/js/jscal2.js"></script><script src="media/system/js/es.js"></script><link href="jscal2.css" rel="stylesheet" type="text/css" /><link href="border-radius.css" rel="stylesheet" type="text/css" /><link href="steel.css" rel="stylesheet" type="text/css" /><script type="text/javascript" src="script/jquery-1.4.2.js"></script><script type="text/javascript" src="script/jquery.tools.js"></script><script type="text/javascript" src="script/ikonik.js"></script><h2>Pedir cita</h2><form action="http://www.pelugo.es/index.php/pcita" align="center" method="post"><b>1º Indica el tipo de cita que deseas</b><br />
+<select name="tipoDeCita"> <!--?php
+
+/**
+ * Database config variables
+ */
+define("DB_HOST", "db462711312.db.1and1.com");
+define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD.
+define("DB_PASSWORD", "arh217956");//Modificar por el password elegido
+define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial.
+
+// Connecting to database
+   
+        // connecting to mysql
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+        // selecting database
+        mysql_select_db(DB_DATABASE);
+
+      // Si hubiese un tratamiento seleccionado saldría en primer lugar	  
+	  echo " {$_POST['tipoDeCita']}  ";
+	  echo '<option value=' .$_POST['tipoDeCita']. '-->' .$_POST['tipoDeCita']. ''; $tipoDeCita = mysql_query("SELECT tipo FROM tipoDeCita "); while($gu=mysql_fetch_assoc($tipoDeCita)){ echo " {$gu["tipo"]} "; echo '<option value=" .$gu[&quot;tipo&quot;]. ">' .$gu["tipo"]. '</option>'; } ?&gt; </select><br />
+<br />
+<b>2º Selecciona la peluqueria</b><br />
+<select name="peluqueria"> <!--?php
+
+/**
+ * Database config variables
+ */
+define("DB_HOST", "db462711312.db.1and1.com");
+define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD.
+define("DB_PASSWORD", "arh217956");//Modificar por el password elegido
+define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial.
+
+// Connecting to database
+   
+        // connecting to mysql
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+        // selecting database
+        mysql_select_db(DB_DATABASE);
+
+
+
+$peluquerias = mysql_query("SELECT nombre FROM peluquerias  ");
+
+	  // si hubiese una peluquería seleccionada saldría la primera
+	  echo " {$_POST['peluqueria']}  ";
+	  echo '<option value=' .$_POST['peluqueria']. '-->' .$_POST['peluqueria']. ''; while($gu=mysql_fetch_assoc($peluquerias)){ echo " {$gu["nombre"]} "; echo '<option value=" .$gu[&quot;nombre&quot;]. ">' .$gu["nombre"]. '</option>'; } ?&gt; </select><br />
+<br />
+<b>3º Elije la fecha</b> <input echo="" id="f_date1" name="fecha" size="10" value="&lt;?php" /> /&gt;<button id="f_btn1"><img src="http://www.pelugo.es/images/botones/calendario_small.png" style="height: 25px; width: 25px" /></button><script type="text/javascript">//<![CDATA[
+
+      var cal = Calendar.setup({
+          onSelect: function(cal) { cal.hide() },
+          showTime: true
+      });
+      cal.manageFields("f_btn1", "f_date1", "%d-%m-%Y");
+
+
+    //]]></script><br />
+<br />
+<b>4º Pulsa para ver los horarios disponibles</b><br />
+<!--?php // <input type="submit" name="enviar" value="Ver horarios disponibles"-->?&gt;<button class="button small green" href="#" onclick="window.location.reload()">Ver horarios disponibles</button><select name="hora"> <!--?php
+	/**
+ * Database config variables
+ */
+define("DB_HOST", "db462711312.db.1and1.com");
+define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD.
+define("DB_PASSWORD", "arh217956");//Modificar por el password elegido
+define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial.
+
+// Connecting to database
+  
+        // connecting to mysql
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+        // selecting database
+        mysql_select_db(DB_DATABASE);
+
+$pelu=$_POST['peluqueria'];
+$fecha=$_POST['fecha'];
+// Los delimitadores pueden ser barra, punto o guión
+list($dia, $mes, $anio) = split('[/.-]', $fecha);
+
+$hora = mysql_query("SELECT 9_30,10_,10_30,11_,11_30,12_,12_30,13_,13_30,14_,14_30,15_,15_30,16_,16_30,17_,17_30,18_,18_30,19_,19_30,20_,20_30,21_,21_30,22_,22_30,23_ FROM horarios WHERE nombre='$pelu' ");
+   	
+        while($gg=mysql_fetch_assoc($hora)){
+         
+           if ($gg["9_30"]==1){           
+              $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia'  AND mes = '$mes'  AND anio = '$anio'  AND hora = '9:30'   AND peluqueria = '$pelu'  "); // comprobamos si existe la cita
+            $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas
+                  if ($num_rows -->0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="9:30">9:30</option>'; } }else{ // no hacer nada } if ($gg["10_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '10:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="10:00">10:00</option>'; } }else{ // no hacer nada } if ($gg["10_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '10:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="10:30">10:30</option>'; } }else{ // no hacer nada } if ($gg["11_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '11:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="11:00">11:00</option>'; } }else{ // no hacer nada } if ($gg["11_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '11:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="11:30">11:30</option>'; } }else{ // no hacer nada } if ($gg["12_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '12:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="12:00">12:00</option>'; } }else{ // no hacer nada } if ($gg["12_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '12:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="12:30">12:30</option>'; } }else{ // no hacer nada } if ($gg["13_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '13:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="13:00">13:00</option>'; } }else{ // no hacer nada } if ($gg["13_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '13:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="13:30">13:30</option>'; } }else{ // no hacer nada } if ($gg["14_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '14:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="14:00">14:00</option>'; } }else{ // no hacer nada } if ($gg["14_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '14:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="14:30">14:30</option>'; } }else{ // no hacer nada } if ($gg["15_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '15:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="15:00">15:00</option>'; } }else{ // no hacer nada } if ($gg["15_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '15:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="15:30">15:30</option>'; } }else{ // no hacer nada } if ($gg["16_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '16:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="16:00">16:00</option>'; } }else{ // no hacer nada } if ($gg["16_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '16:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="16:30">16:30</option>'; } }else{ // no hacer nada } if ($gg["17_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '17:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="17:00">17:00</option>'; } }else{ // no hacer nada } if ($gg["17_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '17:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="17:30">17:30</option>'; } }else{ // no hacer nada } if ($gg["18_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '18:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="18:00">18:00</option>'; } }else{ // no hacer nada } if ($gg["18_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '18:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="18:30">18:30</option>'; } }else{ // no hacer nada } if ($gg["19_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '19:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="19:00">19:00</option>'; } }else{ // no hacer nada } if ($gg["19_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '19:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="19:30">19:30</option>'; } }else{ // no hacer nada } if ($gg["20_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '20:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="20:00">20:00</option>'; } }else{ // no hacer nada } if ($gg["20_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '20:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="20:30">20:30</option>'; } }else{ // no hacer nada } if ($gg["21_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '21:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="21:00">21:00</option>'; } }else{ // no hacer nada } if ($gg["21_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '21:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="21:30">21:30</option>'; } }else{ // no hacer nada } if ($gg["22_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '22:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="22:00">22:00</option>'; } }else{ // no hacer nada } if ($gg["22_30"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '22:30' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="22:30">22:30</option>'; } }else{ // no hacer nada } if ($gg["23_"]==1){ $existeCita = mysql_query("SELECT dia, mes, anio, hora, peluqueria from citas WHERE dia = '$dia' AND mes = '$mes' AND anio = '$anio' AND hora = '23:00' AND peluqueria = '$pelu' "); // comprobamos si existe la cita $num_rows = mysql_num_rows($existeCita); //numero de filas retornadas if ($num_rows &gt; 0) { // la cita existe con en esa hora y dia } else { // la cita no existe en esa hora y dia echo '<option value="23:00">23:00</option>'; } }else{ // no hacer nada } } // end while //echo '</select>'; //echo $dia; //echo '<br />
+'; //echo $mes; //echo '<br />
+'; //echo $anio; echo '<br />
+'; //echo $pelu; echo '<br />
+'; ?&gt; <!--?php //<input type="submit" name="enviar" value="Confirmar Cita" -->?&gt; <input name="checkbox" type="radio" value="1234" />Ya tengo segura mi cita<br />
+<!--?php // <input type="image" src="http://www.pelugo.es/images/botones/Confirmar.png" name="image" width="250" height="150"  onClick="window.location.reload()"-->?&gt;<p style="margin-top:1.5em"><button class="button large blue" onclick="window.location.reload()">Confirmar cita</button></p></form><p><b>* Asegúrese de volver a indicar la peluquería después de ver los horarios disponibles</b> <!--?php
+/**
+ * Database config variables
+ */
+define("DB_HOST", "db462711312.db.1and1.com");
+define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD.
+define("DB_PASSWORD", "arh217956");//Modificar por el password elegido
+define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial.
+
+
+ 
+    // Connecting to database
+   // public function connect() {
+        // connecting to mysql
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+        // selecting database
+        mysql_select_db(DB_DATABASE);
+ 
+
+  $id_cita=null;
+  $fecha=$_POST['fecha'];
+  $hora_cita = $_POST['hora'];
+  $dia=$_POST['dia'];
+  $mes=$_POST['mes'];
+  $anio=$_POST['anio'];
+  $confirmacion='no';
+  $peluqueria=$_POST['peluqueria'];
+  $usuario=null;
+  $tipoDeCita=$_POST['tipoDeCita'];
+
+   
+// Los delimitadores pueden ser barra, punto o guión
+list($dia, $mes, $anio) = split('[/.-]', $fecha);
+
+
+ if (!empty($_POST["fecha"])){
+
+ if (isset($_POST[checkbox])){
+
+    // obtenemos el usuario actual
+    $usuario_sesion = mysql_query("SELECT username FROM l3heb_session ");
+   	
+        while($e=mysql_fetch_assoc($usuario_sesion)){	    
+            $usuario=$e["username"];	    
+	}   
+ 
+     echo $usuario;
+    $result = mysql_query("INSERT INTO citas(id_cita,hora,dia,mes,anio,confirmacion,peluqueria,usuario,tipoDeCita) VALUES(null,'$hora_cita','$dia','$mes','$anio','$confirmacion','$peluqueria','$usuario','$tipoDeCita')");
+        // check for successful store
+
+        if ($result) {
+
+           echo(" La cita fue agregada  correctamente.");
+
+        } else {
+
+            echo(" Ha ocurrido un error.");
+        }
+
+   }
+
+  
+
+  }  // if exterior
+
+
+?--></p>
+
