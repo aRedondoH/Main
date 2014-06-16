@@ -37,7 +37,7 @@ int numberOfProcessesTemp = 0;
 char* deblank(char* input) {
 	int i, j;
 	char *output = input;
-	for (i = 0, j = 0; i < strlen(input); i++, j++) {
+	for (i = 0, j = 0; i <= strlen(input); i++, j++) {
 		if (input[i] != ' ')
 			output[j] = input[i];
 		else
@@ -46,16 +46,48 @@ char* deblank(char* input) {
 	output[j] = 0;
 	return output;
 }
+/* Print array of processes */
+void printArray(char *arrayOfProcesses[200]) {
+	int z;
+	/* print the list of processes */
+	printf("List of processes: \n");
+	for (z = 0; z <= numberOfProcesses; z++) {
+		printf("%s pos: %d", arrayOfProcesses[z], z);
+	}
+	printf("\n");
+}
 
-/*Insert process in array */
+/*Insert process in Array */
 void insertProcessArray(char * proce) {
 
-	i++;
-	// Memory allocation for each process
-	arrayOfProcesses[i] = malloc(strlen(proce) + 1);
-	// copy the process into array
-	strcpy(arrayOfProcesses[i], proce);
-	numberOfProcesses = i;
+	int emptyHole = 0;
+	int positionEmptyHole = 0;
+	int p;
+
+
+	for (p = 0; p < numberOfProcesses; p++) {
+		// if the array has an empty hole
+		if (strcmp(arrayOfProcesses[p], "") == 0) {
+			emptyHole = 1;
+			positionEmptyHole = p;
+		}
+	}
+
+	if (emptyHole == 1) {
+		// Memory allocation for each process
+		arrayOfProcesses[positionEmptyHole] = malloc(strlen(proce) + 1);
+		// copy the process into array
+		strcpy(arrayOfProcesses[positionEmptyHole], proce);
+	} else {
+		if (emptyHole == 0) {
+			i++;
+			// Memory allocation for each process
+			arrayOfProcesses[i] = malloc(strlen(proce) + 1);
+			// copy the process into array
+			strcpy(arrayOfProcesses[i], proce);
+			numberOfProcesses = i;
+		}
+	}
 
 }
 
@@ -65,21 +97,10 @@ void insertProcessArrayTemp(char * proce) {
 	// Memory allocation for each process
 	arrayOfProcessesTemp[p] = malloc(strlen(proce) + 1);
 	// copy the process into array
-	strcpy(arrayOfProcessesTemp[p],proce);
+	strcpy(arrayOfProcessesTemp[p], proce);
 	numberOfProcessesTemp = p;
 	p++;
 
-}
-
-/* Print array of processes */
-void printArray(char *arrayOfProcesses[200]) {
-	int z;
-	/* print the list of processes */
-	printf("List of processes: \n");
-	for (z = 0; z < numberOfProcesses; z++) {
-		printf("%s pos: %d", arrayOfProcesses[z],z);
-	}
-	printf("\n");
 }
 
 /* Get all process running */
@@ -99,7 +120,13 @@ void makeListEveryProcessRunning() {
 
 	/* Read the output a line at a time -output it. */
 	while (fgets(line, sizeof line, fp) != NULL ) {
-		insertProcessArray(line);
+		//insertProcessArray(line);
+		i++;
+		// Memory allocation for each process
+		arrayOfProcesses[i] = malloc(strlen(line) + 1);
+		// copy the process into array
+		strcpy(arrayOfProcesses[i], line);
+		numberOfProcesses = i;
 	}
 }
 
@@ -132,6 +159,26 @@ void cleanArray(char * arrayToClean[200]) {
 	p = 0;
 }
 
+int checkIfTheProcessExistsOnArray(char * process) {
+	int found = 0;
+	int i;
+
+	for (i = 0; i <= numberOfProcesses; i++) {
+		if (strcmp(process, arrayOfProcesses[i]) == 0) {
+			found = 1;
+		}
+	}
+	/* The process exists within array */
+	if (found == 1) {
+		return 1;
+	} else {
+		if (found == 0) {
+			return 0;
+		}
+	}
+	return 0;
+}
+
 void checkNewProcesses() {
 	int s;
 	int d;
@@ -144,8 +191,11 @@ void checkNewProcesses() {
 		}
 		/* if found==-1 outside loop means there is a new process*/
 		if (found == -1) {
-			printf("New process activate: %s\n", arrayOfProcessesTemp[s]);
-			insertProcessArray(arrayOfProcessesTemp[s]);
+			if (checkIfTheProcessExistsOnArray(arrayOfProcessesTemp[s]) == 0) {
+				printf("New process activate: %s\n", arrayOfProcessesTemp[s]);
+				insertProcessArray(arrayOfProcessesTemp[s]);
+			}
+			//printArray(arrayOfProcesses);
 		}
 		found = -1;
 	}
@@ -153,13 +203,20 @@ void checkNewProcesses() {
 
 void removeProcessOnArray(char * process) {
 	int n;
-	for (n = 0; n < numberOfProcesses; n++) {
+	for (n = 0; n <= numberOfProcesses; n++) {
 		/* if the process is found */
-		if (strcmp(arrayOfProcesses[n], process) == 0) {
+		if ((strcmp(arrayOfProcesses[n], process) == 0)
+				&& (strcmp(process, "") != 0)) {
 			int f;
 			/* assigning the next process to the current position to remove */
-			for (f = n; f < numberOfProcesses; f++) {
-				arrayOfProcesses[f] = arrayOfProcesses[f + 1];
+			for (f = n; f <= numberOfProcesses; f++) {
+				if (f != numberOfProcesses) {
+					arrayOfProcesses[f] = arrayOfProcesses[f + 1];
+				} else {
+					if (f == numberOfProcesses) {
+						arrayOfProcesses[f] = "";
+					}
+				}
 			}
 		}
 	}
@@ -169,17 +226,20 @@ void checkTerminationProcesses() {
 	int h;
 	int k;
 	int found = -1;
-	for (h = 0; h < numberOfProcesses; h++) {
-		for (k = 0; k < numberOfProcessesTemp; k++) {
+	for (h = 0; h <= numberOfProcesses; h++) {
+		for (k = 0; k <= numberOfProcessesTemp; k++) {
 			if (strcmp(arrayOfProcesses[h], arrayOfProcessesTemp[k]) == 0) {
 				found = 0;
 			}
 		}
 		/* if found==-1 outside loop means there is a termination process */
-		if (found == -1) {
-			printf("Termination process: %s\n", arrayOfProcesses[h]);
-			removeProcessOnArray(arrayOfProcesses[h]);
+		if (strcmp(arrayOfProcesses[h], "")!=0) {
+			if (found == -1) {
+				printf("Termination process: %s\n", arrayOfProcesses[h]);
+				removeProcessOnArray(arrayOfProcesses[h]);
+				//printArray(arrayOfProcesses);
 
+			}
 		}
 		found = -1;
 	}
@@ -191,9 +251,8 @@ int main(void) {
 	for (;;) {
 		makeListEveryProcessRunningTemp();
 		checkNewProcesses();
-		//checkTerminationProcesses();
-		printArray(arrayOfProcesses);
-		sleep(3);
+		checkTerminationProcesses();
+		sleep(1);
 		cleanArray(arrayOfProcessesTemp);
 	}
 	return EXIT_SUCCESS;
