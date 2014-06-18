@@ -30,7 +30,7 @@
 
 /* Global variables */
 char *arrayOfCommonProcesses[MAXNUMBERPROCESSES];
-int i = -1;
+int currentPosition = -1;
 int numberOfProcesses = 0;
 
 int p = 0;
@@ -86,18 +86,18 @@ void insertProcessArray(char * proce) {
 	} else {
 		// if there is not an empty hole it insert the process in a new position
 		if (emptyHole == 0) {
-			i++;
+			currentPosition++;
 			// Memory allocation for each process
-			arrayOfCommonProcesses[i] = malloc(strlen(proce) + 1);
+			arrayOfCommonProcesses[currentPosition] = malloc(strlen(proce) + 1);
 			// copy the process into array
-			strcpy(arrayOfCommonProcesses[i], proce);
-			numberOfProcesses = i;
+			strcpy(arrayOfCommonProcesses[currentPosition], proce);
+			numberOfProcesses = currentPosition;
 		}
 	}
 }
 
-/* Get all process running */
-void makeListEveryProcessRunning() {
+/* Get all process running without checking PID */
+void makeListEveryProcessRunningWithoutPID() {
 	char line[MAXLENGHTLINE];
 
 	FILE *fp;
@@ -115,17 +115,59 @@ void makeListEveryProcessRunning() {
 	/* Read the output a line at a time -output it. */
 	while (fgets(line, sizeof line, fp) != NULL ) {
 		//insertProcessArray(line);
-		i++;
+		currentPosition++;
 		// Memory allocation for each process
-		arrayOfCommonProcesses[i] = malloc(strlen(line) + 1);
+		arrayOfCommonProcesses[currentPosition] = malloc(strlen(line) + 1);
 		// copy the process into array
-		strcpy(arrayOfCommonProcesses[i], line);
-		numberOfProcesses = i;
+		strcpy(arrayOfCommonProcesses[currentPosition], line);
+		numberOfProcesses = currentPosition;
 	}
 }
 
-/* Get all process running */
-void makeListEveryProcessRunningTemp() {
+/* Get all process running checking PID */
+void makeListEveryProcessRunningCheckingPID() {
+	char line[MAXLENGHTLINE];
+	FILE *fp;
+
+	fp = popen("ps aux | awk '{printf $11 \" \" $2 \"\\n\"}' ", "r");
+
+	/* Error open file */
+	if (fp == NULL ) {
+		printf("Failed to run command\n");
+		fflush(stdout);
+	}
+
+	/* Read the output a line at a time -output it. */
+	while (fgets(line, sizeof line, fp) != NULL ) {
+
+		int processIgnored = 0; // processIgnored==0 when the process is not ignored and processIgnored==1 when the process will be ignored
+		/* Ignore ps process */
+		if ((line[0] == 'p') && (line[1] = 's')) {
+			processIgnored = 1;
+		}
+		/* Ignore sh process */
+		if ((line[0] == 's') && (line[1] == 'h')) {
+			processIgnored = 1;
+		}
+		/* Ignore [sh] process */
+		if ((line[0] == '[') && (line[1] == 's') && (line[2] == 'h')
+				&& (line[3] == ']')) {
+			processIgnored = 1;
+		}
+		if (processIgnored == 0) {
+			// insert process into array
+			currentPosition++;
+			// Memory allocation for each process
+			arrayOfCommonProcesses[currentPosition] = malloc(strlen(line) + 1);
+			// copy the process into array
+			strcpy(arrayOfCommonProcesses[currentPosition], line);
+			numberOfProcesses = currentPosition;
+		}
+	}
+}
+
+/* Get all process running in temp list without checking PID*/
+void makeListEveryProcessRunningTempWithoutPID() {
 	char line[MAXLENGHTLINE];
 
 	FILE *fp;
@@ -148,6 +190,47 @@ void makeListEveryProcessRunningTemp() {
 		strcpy(arrayOfCommonProcessesTemp[p], line);
 		numberOfProcessesTemp = p;
 		p++;
+	}
+}
+
+/* Get all process running in temp list checking PID*/
+void makeListEveryProcessRunningTempCheckingPID() {
+	char line[MAXLENGHTLINE];
+
+	FILE *fp;
+
+	fp = popen("ps aux | awk '{printf $11 \" \" $2 \"\\n\"}' ", "r");
+
+	/* Error open file */
+	if (fp == NULL ) {
+		printf("Failed to run command\n");
+		fflush(stdout);
+	}
+
+	/* Read the output a line at a time -output it. */
+	while (fgets(line, sizeof line, fp) != NULL ) {
+		int processIgnored = 0; // processIgnored==0 when the process is not ignored and processIgnored==1 when the process will be ignored
+		/* Ignore ps process */
+		if ((line[0] == 'p') && (line[1] = 's')) {
+			processIgnored = 1;
+		}
+		/* Ignore sh process */
+		if ((line[0] == 's') && (line[1] == 'h')) {
+			processIgnored = 1;
+		}
+		/* Ignore [sh] process */
+		if ((line[0] == '[') && (line[1] == 's') && (line[2] == 'h')
+				&& (line[3] == ']')) {
+			processIgnored = 1;
+		}
+		if (processIgnored == 0) {
+			// Memory allocation for each process
+			arrayOfCommonProcessesTemp[p] = malloc(strlen(line) + 1);
+			// copy the process into array
+			strcpy(arrayOfCommonProcessesTemp[p], line);
+			numberOfProcessesTemp = p;
+			p++;
+		}
 	}
 }
 
@@ -180,7 +263,6 @@ int checkIfTheProcessExistsOnArray(char * process) {
 	return 0;
 }
 
-
 /* Remove a specific process */
 void removeProcessOnArray(char * process) {
 	int n;
@@ -210,14 +292,17 @@ void checkNewProcesses() {
 	// check if there is a new process to include in the main list of processes
 	for (s = 0; s < numberOfProcessesTemp; s++) {
 		for (d = 0; d < numberOfProcesses; d++) {
-			if (strcmp(arrayOfCommonProcessesTemp[s], arrayOfCommonProcesses[d]) == 0) {
+			if (strcmp(arrayOfCommonProcessesTemp[s], arrayOfCommonProcesses[d])
+					== 0) {
 				found = 0;
 			}
 		}
 		/* if found==-1 outside loop means there is a new process*/
 		if (found == -1) {
-			if (checkIfTheProcessExistsOnArray(arrayOfCommonProcessesTemp[s]) == 0) {
-				printf("New process activate: %s\n", arrayOfCommonProcessesTemp[s]);
+			if (checkIfTheProcessExistsOnArray(arrayOfCommonProcessesTemp[s])
+					== 0) {
+				printf("New process activate: %s\n",
+						arrayOfCommonProcessesTemp[s]);
 				fflush(stdout);
 				insertProcessArray(arrayOfCommonProcessesTemp[s]);
 			}
@@ -234,7 +319,8 @@ void checkTerminationProcesses() {
 	// check if each process from main list is inside of temp list
 	for (h = 0; h <= numberOfProcesses; h++) {
 		for (k = 0; k <= numberOfProcessesTemp; k++) {
-			if (strcmp(arrayOfCommonProcesses[h], arrayOfCommonProcessesTemp[k]) == 0) {
+			if (strcmp(arrayOfCommonProcesses[h], arrayOfCommonProcessesTemp[k])
+					== 0) {
 				found = 0;
 			}
 		}
@@ -251,7 +337,7 @@ void checkTerminationProcesses() {
 }
 /* Check if there is any process activate or deactivate */
 void checkAnyActivationOrTerminationProcess() {
-	makeListEveryProcessRunningTemp();
+	makeListEveryProcessRunningTempCheckingPID();
 	checkNewProcesses();
 	checkTerminationProcesses();
 	cleanArray(arrayOfCommonProcessesTemp);
@@ -260,10 +346,10 @@ void checkAnyActivationOrTerminationProcess() {
 int main(void) {
 	printf("we going to check any process activate or deactivate \n"); /* prints we going to check any process activation or termination */
 	fflush(stdout);
-	makeListEveryProcessRunning(); // make a snapshot of the processes running at the beginning
+	makeListEveryProcessRunningCheckingPID(); // make a snapshot of the processes running at the beginning
 	for (;;) {
 		checkAnyActivationOrTerminationProcess();
-		sleep(1);
+		sleep(3);
 	}
 	return EXIT_SUCCESS;
 
