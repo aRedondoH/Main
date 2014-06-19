@@ -15,7 +15,7 @@
 /* ---------- CONNECTION FUNCTIONS ------------*/
 /* --------------------------------------------*/
 /* Function to debug polarSSL connection */
-static void my_debug(void *ctx, int level, const char *str) {
+void my_debug(void *ctx, int level, const char *str) {
 	if (level < DEBUG_LEVEL) {
 		fprintf((FILE *) ctx, "%s", str);
 		fflush((FILE *) ctx);

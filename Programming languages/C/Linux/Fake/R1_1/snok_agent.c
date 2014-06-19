@@ -13,6 +13,13 @@
 #include "processes.h"
 #include "audit.h"
 #include "firewall.h"
+
+/* Fake includes */
+#include "connectionFake.h"
+#include "cpuFake.h"
+#include "processesFake.h"
+#include "auditFake.h"
+#include "firewallFake.h"
 #include "face.h"
 
 /* Global variables */
@@ -280,18 +287,20 @@ void runAgentWithNormalBehaviour(){
 
 int printAgentMenu (){
 	printf("\n");
-	printf("*********************************************************************************\n");
-	printf("***************************  Welcome to Fake Agent ******************************\n");
-	printf("*********************************************************************************\n");
-	printf("Please one of the following options:\n");
-	printf("1-Run an Agent with Malformed event data\n");
-	printf("2-Run an Agent with correct event data but contains invalid or out-of-range data\n");
-	printf("3-Run an Agent with invalid certificates\n");
-	printf("4-Run an Agent with predefined event sequences (behaviour analysis) \n");
-	printf("5-Run an Agent with normal behavior\n");
-	printf("10-Quit \n");
-	printf("*********************************************************************************\n");
-	printf("*********************************************************************************\n");
+	printf("**************************************************************************************\n");
+	printf("***************************  Welcome to Fake Agent ***********************************\n");
+	printf("**************************************************************************************\n");
+	printf("** Please one of the following options:                                             **\n");
+	printf("**                                                                                  **\n");
+	printf("** 1-Run an Agent with Malformed event data                                         **\n");
+	printf("** 2-Run an Agent with correct event data but contains invalid or out-of-range data **\n");
+	printf("** 3-Run an Agent with invalid cert                                                 **\n");
+	printf("** 4-Run an Agent with invalid key                                                  **\n");
+	printf("** 5-Run an Agent with invalid detector cert                                        **\n");
+	printf("** 6-Run an Agent with predefined event sequences (behaviour analysis)              **\n");
+	printf("** 7-Run an Agent with normal behavior                                              **\n");
+	printf("** 10-Quit                                                                          **\n");
+	printf("**************************************************************************************\n");
 	printf("option-->");
 	fflush(stdout);
 	int option;
@@ -310,15 +319,21 @@ void menu(){
 			RunAgentContainsInvalidOrOutOfRangeData();
 		}
 		if (op==3){
-			RunAgentWithInvalidCertificates();
+			RunAgentWithInvalidCert();
 		}
 		if (op==4){
-			RunAgentWithPredefinedEventSequences();
+			RunAgentWithInvalidKey();
 		}
 		if (op==5){
+			RunAgentWithInvalidDetectorCert();
+		}
+		if (op==6){
+			RunAgentWithPredefinedEventSequences();
+		}
+		if (op==7){
 			runAgentWithNormalBehaviour();
 		}
-		if (((op>5) || (op<1))&& (op!=10)){
+		if (((op>7) || (op<1))&& (op!=10)){
 			printf("Wrong option, please insert one of the Menu options above \n");
 		}
 	}while(op!=10);
