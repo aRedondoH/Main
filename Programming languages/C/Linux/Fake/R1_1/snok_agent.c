@@ -299,6 +299,7 @@ int printAgentMenu (){
 	printf("** 5-Run an Agent with invalid detector cert                                        **\n");
 	printf("** 6-Run an Agent with predefined event sequences (behaviour analysis)              **\n");
 	printf("** 7-Run an Agent with normal behavior                                              **\n");
+	printf("** 8-Run an Agent with Malformed event data (only one event)                        **\n");
 	printf("** 10-Quit                                                                          **\n");
 	printf("**************************************************************************************\n");
 	printf("option-->");
@@ -313,27 +314,37 @@ void menu(){
 	do{
 		op=printAgentMenu();
 		if (op==1){
+			readArgumentsFromConfigFile();
 			RunAgentWithMalformedEventData();
 		}
 		if (op==2){
+			readArgumentsFromConfigFile();
 			RunAgentContainsInvalidOrOutOfRangeData();
 		}
 		if (op==3){
+			readArgumentsFromConfigFile();
 			RunAgentWithInvalidCert();
 		}
 		if (op==4){
+			readArgumentsFromConfigFile();
 			RunAgentWithInvalidKey();
 		}
 		if (op==5){
+			readArgumentsFromConfigFile();
 			RunAgentWithInvalidDetectorCert();
 		}
 		if (op==6){
+			readArgumentsFromConfigFile();
 			RunAgentWithPredefinedEventSequences();
 		}
 		if (op==7){
 			runAgentWithNormalBehaviour();
 		}
-		if (((op>7) || (op<1))&& (op!=10)){
+		if (op==8){
+			readArgumentsFromConfigFile();
+			RunAgentWithMalformedEventDataSendOneEvent();
+		}
+		if (((op>8) || (op<1))&& (op!=10)){
 			printf("Wrong option, please insert one of the Menu options above \n");
 		}
 	}while(op!=10);

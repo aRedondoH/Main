@@ -10,6 +10,8 @@
 
 /* Run an Agent with Malformed event data */
 void RunAgentWithMalformedEventData();
+/* Run an Agent with Malformed event data (only send one event )*/
+void RunAgentWithMalformedEventDataSendOneEvent();
 /* Run an Agent with event data that is correctly formed but contains invalid or out-of-range data */
 void RunAgentContainsInvalidOrOutOfRangeData();
 /* Run an Agent with invalid cert */
