@@ -1,0 +1,222 @@
+-Operations with files
+	-ls: count directory files
+	-cp: copy
+	-mv: move and change name
+	-rm: remove 
+	-ln: make links file to others files
+
+-Operations with directories
+	-cd: change currently directory
+	-pwd: print the currently directory ( position inside of system files)
+	-basename: print the last file part
+	-dirname: print the path of the file omitting the last part
+	-mkdir: make a new directory
+	-rmdir: remove an empty directory
+	-rm -r: remove any directory (empty or not)
+
+-Files visualization
+	-cat: to see text files
+	-less: to see text files page by page
+	-head: to see the first lines of text files
+	-tail: to see the last lines of text files
+	-nl: to see text files with the number of the lines
+	-strings: shows the text inside of binary file
+	-od: to see data in octal format
+	-xxd: to see data in hexadecimal format	
+	-acroread: to see PDF files
+	-gv: to see PostScript or PDF files
+	-xdvi: to see Tex DVI files
+
+-Making and editing files
+	-emacs: text editor 
+	-vim: text editor ( vi Unix extension version )
+	-soffice: office suite to edit Microsoft document such as Word, Excel or PowerPoint
+	-abiword: to edit MS Word documents
+	-gnumeric: to edit MS Excel documents
+
+-File properties
+	-stat: it shows attributes of files and directories
+	-wc: count bytes, words or lines in a file
+	-du: measure the use of files and directories
+	-file: identify file types
+	-touch: make a file and change time marks
+	-chown: change the files owner
+	-chgrp: change the property of group of files and directories
+	-chmod: change files and directories permissions
+	-umask: defining a default mode to new files and directories
+	-chattr: change extended attributes
+	-lsattr: count extended attributes 
+
+-Files locate
+	-find: locate files into the directory hierarchy
+	-xargs: processing a list of locate files
+	-locate: make a index of files and searching the index by chain
+	-which: locate executables in the searching path
+	-type: locate executables in the searching path (bash integration)
+	-whereis: locate executables, documentation and source files
+
+-Manipulate text files
+	-grep: search file lines which match with a regular expression
+	-cut: extract file columns
+	-paste: add columns
+	-tr: traducing chars by others
+	-sort: sort text lines according with different critearia
+	-uniq: locate the same lines inside of file
+	-tee: coping and printing files on standard output
+
+-Compressing and packing files
+	-tar: packing several files in one
+	-gzip: compressing files in .zip format
+	-gunzip: unzip files in .zip format
+	-bzip2: compressing files in BZip format
+	-bunzip2: unzip files in BZip format
+	-bzcat: compressing and unzip files through stdin/stdout
+	-compress: compressing files
+	-uncompress: uncompressing files
+	-zcat: compressing and uncompressing files through stdin/stdout
+	-zip: compressing files in .zip format
+	-unzip: uncompressing files in .zip format
+	-metamail: extracting data MIME files
+
+-Compare files
+	-diff: comparing line by line two files or directories
+	-comm: comparing line by line two files sorted
+	-cmp: comparing byte by byte two files
+	-md5sum: calculating a verification sum of selected files
+
+-Pring files
+	-lpr: print a file
+	-lpq: to see the printer queue
+	-lprm: delete a printer tasks
+
+-Spelling revision
+	-look: quick search of spelling word
+	-aspell: interactive spelling reviser
+	-spell: batch spelling reviser
+
+-Disk and file system
+	-df: shows available space in file system mounted
+	-mount: make the capability to access a disk
+	-unmount: make a disk inaccessible
+	-fsck: check errors on a disk partition
+	-sync: empty all the disk cache
+
+-Security copies and remote storage
+	-dump: write a partition disk in a backup
+	-restore: restoring results dumped
+	-cdrecord: recording a CD, DVD or Blu-ray
+	-rsync: duplicate tape unit
+
+-Processes visualization
+	-ps: counting processes
+	-uptime: shows system load
+	-w: counting active processes for all the users
+	-top: processes control in a interactive way the processes which consume more resources
+	-gnome-system-monitor: process control in graphical mode and system process as well
+	-xload: simply graphical monitor of the system load
+	-free: shows empty memory
+
+-Process management
+	-kill: finalize a process
+	-nice: run a program with a specific priority
+	-renice: change the process priority while it is running
+
+-Schedule tasks
+	-sleep: wait a specific period of time doing nothing
+	-watch: run a program in specific interval
+	-at: scheduling a task for once in the future
+	-crontab: scheduling tasks for more times in the future
+
+-Start, logout and shutdown
+	-shutdown: stop or reboot system
+
+-User and environment
+	-logname: print the sesion name
+	-whoami: print the currently user
+	-id: print user ID and groups associated
+	-who: count users connected (extended version)
+	-users: count users connected (simply version)
+	-finger: print users information
+	-last: determine the last user start sesion
+	-printenv: print the environment
+
+-User accounts management
+	-useradd: make an account
+	-userdel: remove an account
+	-usermod: modify an account
+	-passwd: change the password
+	-chfn: change the personal information of the users
+	-chsh: change the user shell
+
+-Become supersuser
+	-sudo su -: become superuser (password is needed)
+
+-Groups management
+	-groups: print the groups membership of an user
+	-groupadd: make a group
+	-groupdel: remove a group
+	-groupmod: modigy a group
+
+-Host information
+	-uname: print basic system information
+	-hostname: print system host name
+	-dnsdomain name: the same that "hostname -d"
+	-domainname: the same that "hostname -y"
+	-nisdomainname: the same that "hostname -y"
+	-ypdomainname: the same that "hostname -y"
+	-ip: establish and showing network interfaces information
+	-ifconfig: old command to establish and showing network interfaces information
+
+-Host locate
+	-host: searching host names
+	-whois: search internet domain sign on
+	-ping: check if a remote host is accessible
+	-traceroute: see the route path in a remote host
+
+-Network connections
+	-ssh: safe connection to remote host
+	-telnet:  unsafe connnection to remote host
+	-scp: copy files from a remote host safety (batch)
+	-sftp: copy files from a remote host safety (interactive)
+	-ftp: copy files from a remote host unsafe
+-Email
+	-mutt: email client text-based
+	-mail: minimal email client text-based
+	-mailq: see the queue outgoing from your system
+
+-Web browser
+	-lynx: web browser text-based
+	-wget: download web pages and files
+
+-Instant messenger
+	-write: send messages to a terminal
+	-mesg: to forbit talk and write
+	-tty: print the terminal device name
+
+-Output
+	-echo: print simply text in output
+	-printf: print text in output format
+	-yes: print repeated text in output
+	-seq: print a number sequence in output
+	-clear: clean the screen
+
+-Date and time
+	-cal: shows a calendar
+	-date: print or establish date and time
+	-ntpdate: establish date and time throught remote server
+
+-Graphics
+	-eog: show graphical files
+	-geeqie: show graphical files and slipes presentations
+	-ksnapshot: make a snapshot
+	-gimp: editing images
+	-dia: drawing diagrams
+	-gnuplot: make graphics and plots
+	-xcreensaver: run the screensaver
+
+-Sound
+	-cdparanioa: extract CD audio to WAV files
+	-lame: convert from WAV to MP3
+	-id3tag: editing ID3 tags
+	-audacity: editing audio files
+	-k3b: record CDs with graphical interface

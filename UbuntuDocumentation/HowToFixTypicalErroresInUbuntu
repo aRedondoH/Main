@@ -1,0 +1,8 @@
+How to fix overlay in Ati
+	sudo amdconfig --set-pcs-val=MCIL,DigitalHDTVDefaultUnderscan,0
+How to show Ati monitor manager 
+	gksudo amdcccle
+How to change default monitor
+	1. gedit ~/.config/monitors.xml
+	2. change <primary>yes</primary> to <primary>no</primary>
+	3. restart
