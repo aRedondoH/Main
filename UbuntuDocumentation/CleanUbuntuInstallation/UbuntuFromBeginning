@@ -1,22 +1,30 @@
 1º Install Ubuntu Release 12.04 (precise) 64 bit
 2º Install the script with the important apps
-	-sudo sh installFirst.sh 
+	- sudo sh installFirst.sh 
 3º Conky configuration
-	-mv conkyrc /home/username/.conkyrc
-	-go to System tools-->Preferences-->Startup applications
-	-insert conky
+	- mv conkyrc /home/username/.conkyrc
+	- go to System tools-->Preferences-->Startup applications
+	- insert conky
 4º CompizConfig Settings Manager
 	-check the following app in the Windows Management part:
-		-Move Window
-		-Put
-		-Shift Switcher
-		-Static Application Switcher
-		-Grid
-		-Resize Window
-		-Scale 
-		-Snapping Windows	
-		-Windows Rules
+		- Move Window
+		- Put
+		- Shift Switcher
+		- Static Application Switcher
+		- Grid
+		- Resize Window
+		- Scale 
+		- Snapping Windows	
+		- Windows Rules
 	-Scale configuration
-		-Go to Behaviour tab
-		-Go to Multi Output Mode and select "On current output device"
+		- Go to Behaviour tab
+		- Go to Multi Output Mode and select "On current output device"
+5º Theme configuration
+	- Go to System Settings-->Ubuntu Tweak-->Overview
+	- Select theme
+	- Add the following configuration:
+		- Gtk theme: Ambiance
+		- Icon theme: default
+		- Cursor theme: handhelds
+		- Windows theme: delorean-light-theme-3.6
 		
