@@ -12,8 +12,11 @@ using namespace std;
 
 # pragma comment(lib, "wbemuuid.lib")
 
-int main(int argc, char **argv)
-{
+int counterPreVista = 0;
+int counterPostVista = 0;
+
+/* Check if the antivirus is enabled or disabled in Windows pre-vista versions*/
+int CheckIfAntivirusIsEnabledOrDisabledPreVista(){
 	HRESULT hres;
 
 	// Initialize COM.
@@ -74,21 +77,9 @@ int main(int argc, char **argv)
 	// current user and obtain pointer pSvc
 	// to make IWbemServices calls.
 
-	//hres = pLoc->ConnectServer(
-
-	//	_bstr_t(L"ROOT\\C"), // WMI namespace
-	//	NULL,                    // User name
-	//	NULL,                    // User password
-	//	0,                       // Locale
-	//	NULL,                    // Security flags                 
-	//	0,                       // Authority       
-	//	0,                       // Context object
-	//	&pSvc                    // IWbemServices proxy
-	//	);
-
 	hres = pLoc->ConnectServer(
 
-		_bstr_t(L"ROOT\\SecurityCenter2"), // WMI namespace
+		_bstr_t(L"ROOT\\SecurityCenter"), // WMI namespace
 		NULL,                    // User name
 		NULL,                    // User password
 		0,                       // Locale
@@ -107,9 +98,8 @@ int main(int argc, char **argv)
 		return 1;                // Program has failed.
 	}
 
-	//cout << "Connected to ROOT\\CIMV2 WMI namespace" << endl;
-	cout << "Connected to ROOT\\SecurityCenter2 WMI namespace" << endl;
-
+	//cout << "Connected to ROOT\\SecurityCenter2 WMI namespace" << endl;
+	printf("\n");
 	// Set the IWbemServices proxy so that impersonation
 	// of the user (client) occurs.
 	hres = CoSetProxyBlanket(
@@ -142,7 +132,6 @@ int main(int argc, char **argv)
 	IEnumWbemClassObject* pEnumerator = NULL;
 	hres = pSvc->ExecQuery(
 		bstr_t("WQL"),
-		//bstr_t("SELECT * FROM Win32_Process"),
 		bstr_t("SELECT * FROM AntiVirusProduct"),
 		WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
 		NULL,
@@ -163,6 +152,7 @@ int main(int argc, char **argv)
 		IWbemClassObject *pclsObj;
 		ULONG uReturn = 0;
 
+		
 		while (pEnumerator)
 		{
 			hres = pEnumerator->Next(WBEM_INFINITE, 1,
@@ -176,15 +166,29 @@ int main(int argc, char **argv)
 			VARIANT vtProp;
 			VariantInit(&vtProp);
 			// Get the value of the Name property
-			//hres = pclsObj->Get(L"Name", 0, &vtProp, 0, 0);
 			hres = pclsObj->Get(L"displayName", 0, &vtProp, 0, 0);
 			wcout << "Product name: " << vtProp.bstrVal << endl;
 
+			// Get the value of the Product state
 			hres = pclsObj->Get(L"productState", 0, &vtProp, 0, 0);
-			wcout << "Product state: " << vtProp.pintVal << endl;
+			char hex[10];
+			// Insert the value of producState into hex string
+			sprintf(hex, "0%x", vtProp.intVal);
 
+			//printf("Hex: %c %c %c %c %c %c \n", hex[0], hex[1], hex[2], hex[3], hex[4], hex[5]);
+			//std::cout << "Product state(hex): " << std::hex << vtProp.pintVal << '\n';
+			if (hex[2] == '1'){
+				printf("The antivirus is enabled\n");
+			}
+			else{
+				printf("The antivirus is disabled\n");
+			}
+			printf("\n");
 			VariantClear(&vtProp);
+			counterPreVista++;
 		}
+		//printf("Counter is %d\n", counter);
+	
 
 	}
 
@@ -196,6 +200,204 @@ int main(int argc, char **argv)
 	CoUninitialize();
 
 	return 0;   // Program successfully completed.
+
+}
+
+/* Check if the antivirus is enabled or disabled in Windows post-vista versions*/
+int CheckIfAntivirusIsEnabledOrDisabledPostVista(){
+	HRESULT hres;
+
+	// Initialize COM.
+	hres = CoInitializeEx(0, COINIT_MULTITHREADED);
+	if (FAILED(hres))
+	{
+		cout << "Failed to initialize COM library. "
+			<< "Error code = 0x"
+			<< hex << hres << endl;
+		return 1;              // Program has failed.
+	}
+
+	// Initialize 
+	hres = CoInitializeSecurity(
+		NULL,
+		-1,      // COM negotiates service                  
+		NULL,    // Authentication services
+		NULL,    // Reserved
+		RPC_C_AUTHN_LEVEL_DEFAULT,    // authentication
+		RPC_C_IMP_LEVEL_IMPERSONATE,  // Impersonation
+		NULL,             // Authentication info 
+		EOAC_NONE,        // Additional capabilities
+		NULL              // Reserved
+		);
+
+
+	if (FAILED(hres))
+	{
+		cout << "Failed to initialize security. "
+			<< "Error code = 0x"
+			<< hex << hres << endl;
+		CoUninitialize();
+		return 1;          // Program has failed.
+	}
+
+	// Obtain the initial locator to Windows Management
+	// on a particular host computer.
+	IWbemLocator *pLoc = 0;
+
+	hres = CoCreateInstance(
+		CLSID_WbemLocator,
+		0,
+		CLSCTX_INPROC_SERVER,
+		IID_IWbemLocator, (LPVOID *)&pLoc);
+
+	if (FAILED(hres))
+	{
+		cout << "Failed to create IWbemLocator object. "
+			<< "Error code = 0x"
+			<< hex << hres << endl;
+		CoUninitialize();
+		return 1;       // Program has failed.
+	}
+
+	IWbemServices *pSvc = 0;
+
+	// Connect to the root\cimv2 namespace with the
+	// current user and obtain pointer pSvc
+	// to make IWbemServices calls.
+
+	hres = pLoc->ConnectServer(
+
+		_bstr_t(L"ROOT\\SecurityCenter2"), // WMI namespace
+		NULL,                    // User name
+		NULL,                    // User password
+		0,                       // Locale
+		NULL,                    // Security flags                 
+		0,                       // Authority       
+		0,                       // Context object
+		&pSvc                    // IWbemServices proxy
+		);
+
+	if (FAILED(hres))
+	{
+		cout << "Could not connect. Error code = 0x"
+			<< hex << hres << endl;
+		pLoc->Release();
+		CoUninitialize();
+		return 1;                // Program has failed.
+	}
+
+	//cout << "Connected to ROOT\\SecurityCenter2 WMI namespace" << endl;
+	printf("\n");
+	// Set the IWbemServices proxy so that impersonation
+	// of the user (client) occurs.
+	hres = CoSetProxyBlanket(
+
+		pSvc,                         // the proxy to set
+		RPC_C_AUTHN_WINNT,            // authentication service
+		RPC_C_AUTHZ_NONE,             // authorization service
+		NULL,                         // Server principal name
+		RPC_C_AUTHN_LEVEL_CALL,       // authentication level
+		RPC_C_IMP_LEVEL_IMPERSONATE,  // impersonation level
+		NULL,                         // client identity 
+		EOAC_NONE                     // proxy capabilities     
+		);
+
+	if (FAILED(hres))
+	{
+		cout << "Could not set proxy blanket. Error code = 0x"
+			<< hex << hres << endl;
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+		return 1;               // Program has failed.
+	}
+
+
+	// Use the IWbemServices pointer to make requests of WMI. 
+	// Make requests here:
+
+	// For example, query for all the running processes
+	IEnumWbemClassObject* pEnumerator = NULL;
+	hres = pSvc->ExecQuery(
+		bstr_t("WQL"),
+		bstr_t("SELECT * FROM AntiVirusProduct"),
+		WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+		NULL,
+		&pEnumerator);
+
+	if (FAILED(hres))
+	{
+		cout << "Query for processes failed. "
+			<< "Error code = 0x"
+			<< hex << hres << endl;
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+		return 1;               // Program has failed.
+	}
+	else
+	{
+		IWbemClassObject *pclsObj;
+		ULONG uReturn = 0;
+
+		
+		while (pEnumerator)
+		{
+			hres = pEnumerator->Next(WBEM_INFINITE, 1,
+				&pclsObj, &uReturn);
+
+			if (0 == uReturn)
+			{
+				break;
+			}
+
+			VARIANT vtProp;
+			VariantInit(&vtProp);
+			// Get the value of the Name property
+			hres = pclsObj->Get(L"displayName", 0, &vtProp, 0, 0);
+			wcout << "Product name: " << vtProp.bstrVal << endl;
+
+			// Get the value of the Product state
+			hres = pclsObj->Get(L"productState", 0, &vtProp, 0, 0);
+			char hex[10];
+			// Insert the value of producState into hex string
+			sprintf(hex, "0%x", vtProp.intVal);
+
+			//printf("Hex: %c %c %c %c %c %c \n", hex[0], hex[1], hex[2], hex[3], hex[4], hex[5]);
+			//std::cout << "Product state(hex): " << std::hex << vtProp.pintVal << '\n';
+			if (hex[2] == '1'){
+				printf("The antivirus is enabled\n");
+			}
+			else{
+				printf("The antivirus is disabled\n");
+			}
+			printf("\n");
+			VariantClear(&vtProp);
+			counterPostVista++;
+		}
+		
+
+	}
+
+	// Cleanup
+	// ========
+
+	pSvc->Release();
+	pLoc->Release();
+	CoUninitialize();
+
+	return 0;   // Program successfully completed.
+
+}
+
+void main(int argc, char **argv)
+{
+	CheckIfAntivirusIsEnabledOrDisabledPreVista();
+	CheckIfAntivirusIsEnabledOrDisabledPostVista();
+
+	if ((counterPreVista == 0) && (counterPostVista == 0)){
+		printf("There are not antivirus installed\n");
+	}
 }
 
 
