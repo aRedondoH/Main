@@ -42,55 +42,55 @@ int numberOfCommonProcessesTemp = 0;
 
 /* Headers */
 /* FUNCTION HEADERS COMMON PROCESSES */
-/* Remove blanks from strings */
-char* removeSpaceFromString(char* input);
 /* Print array of processes main*/
 void printListOfCommonProcesses();
 /* Print array of processes temp*/
 void printListOfCommonProcessesTemp();
-/*Insert process in Array */
-void insertProcessOnListCommon(char * proce);
+/* Remove blanks from strings */
+char* removeSpaceFromString(char* input);
+/* Remove \n from a string v2 */
+char* removeNewLine(char *s);
+/* Clean the array assign empty holes */
+void cleanListCommonProcessesTemp(char * arrayToClean[MAXNUMBERPROCESSES]);
+/* Parsing the processes lines */
+void parsingLineCommonProcesses(char line[MAXLENGHTLINE], char ** temp);
+/* Clean temporal list */
+void freeListTemp();
+
 /* Get all process running without checking PID */
 void makeListEveryProcessRunningWithoutPID();
 /* Get all process running in temp list without checking PID*/
 void makeListEveryProcessRunningTempWithoutPID();
-/* Clean the array assign empty holes */
-void cleanListCommonProcessesTemp(char * arrayToClean[MAXNUMBERPROCESSES]);
-/* Check if the process exists inside of the list */
-int checkIfTheProcessExistsOnList(char * process);
+
+/*Insert process in Array */
+void insertProcessOnListCommon(char * proce);
 /* Remove a specific process */
 void removeProcessOnListCommon(char * process);
+/* Insert process in main list without memory leak */
+void insertProcessOnListCommonWithoutMemoryLeak(char * proce);
+/* Remove a specific process without memory leak */
+void removeProcessOnListCommonWithoutMemoryLeak(char * process) ;
+
+/* Check if the process exists inside of the list */
+int checkIfTheProcessExistsOnList(char * process);
 /* Check if one common process is a critical process*/
 int checkIfOneCommonProcessIsCriticalProcess(char * process);
 /* Check if there are new processes*/
 void checkNewProcesses();
+/* Check new processes without losing memory */
+void checkNewProcessesWithoutMemoryLeak();
 /* check if there are new termination processes */
 void checkTerminationProcesses();
+/* Check termination processes without losing memory */
+void checkTerminationProcessesWithoutMemoryLeak();
 /* Check if there is any process activate or deactivate */
 void checkAnyActivationOrTerminationProcess();
-/* Parsing the processes lines */
-void parsingLineCommonProcesses(char line[MAXLENGHTLINE], char ** temp);
+
 
 /* FUNCTION FOR COMMON PROCESSES */
-/* Remove blanks from strings */
-char* removeSpaceFromString(char* input) {
-	int i, j;
-	char *output = input;
-
-	for (i = 0, j = 0; i < strlen(input); i++, j++) {
-		if (input[i] != ' ')
-			output[j] = input[i];
-		else
-			j--;
-	}
-	output[j] = 0;
-	return output;
-}
-
 /* Print array of processes main*/
 void printListOfCommonProcesses() {
 	int z;
-
 	/* print the list of processes */
 	printf("List of processes(main): \n");
 	for (z = 0; z <= numberOfCommonProcesses; z++) {
@@ -112,21 +112,29 @@ void printListOfCommonProcessesTemp() {
 	printf("\n");
 	fflush(stdout);
 }
+/* Remove blanks from strings */
+char* removeSpaceFromString(char* input) {
+	int i, j;
+	char *output = input;
 
+	for (i = 0, j = 0; i < strlen(input); i++, j++) {
+		if (input[i] != ' ')
+			output[j] = input[i];
+		else
+			j--;
+	}
+	output[j] = 0;
+	return output;
+}
 /* Remove \n from a string v2 */
 char* removeNewLine(char *s) {
-	//char str[80];
 	int len;
-	//FILE *fp;
-
-	//fgets(s,sizeof(s),fp);
 	// remove newline
 	len = strlen(s);
 	if (s[len - 1] == '\n')
 		s[len - 1] = 0;
 	return s;
 }
-
 /* Clean the array assign empty holes */
 void cleanListCommonProcessesTemp(char * arrayToClean[MAXNUMBERPROCESSES]) {
 	int l;
@@ -136,13 +144,10 @@ void cleanListCommonProcessesTemp(char * arrayToClean[MAXNUMBERPROCESSES]) {
 	}
 	currentPositionTempList = 0;
 }
-
 /* Parsing the processes lines */
 void parsingLineCommonProcesses(char line[MAXLENGHTLINE], char ** temp) {
 
 	// Parsing processes thats begin with '['
-
-	//char temp[100];
 	if (line[0] == '[') {
 		line[0] = ' ';
 
@@ -150,9 +155,6 @@ void parsingLineCommonProcesses(char line[MAXLENGHTLINE], char ** temp) {
 		stringToCut = removeSpaceFromString(stringToCut);
 		*temp = malloc(strlen(stringToCut) + 1);
 		strcpy(*temp, stringToCut);
-		//printf("Temp1: --%s--\n", temp);
-		//printf("Process with [ --%s--\n", temp);
-
 		//transferEvent(my_id, PROCESS_RUNNING, stringToCut);
 	} else if (line[0] == '/') { // Parsing processes thats begin with '/'
 		char *processToPrint;
@@ -163,20 +165,22 @@ void parsingLineCommonProcesses(char line[MAXLENGHTLINE], char ** temp) {
 		}
 		*temp = malloc(strlen(processToPrint) + 1);
 		strcpy(*temp, processToPrint);
-		//printf("Temp2: --%s--\n", temp);
-		//printf("Process running with / --%s--\n", temp);
-
 		//transferEvent(my_id, PROCESS_RUNNING, processToPrint);
 	} else {
 		// if the process does not need to parsing do nothing
-		//printf("Process running --%s--\n", deblank(line));
 		//transferEvent(my_id, PROCESS_RUNNING, deblank(line));
-		//return line;
 		*temp = malloc(strlen(line) + 1);
 		strcpy(*temp, line);
-		//printf("Temp3: --%s--\n", temp);
 	}
-	//return temp;
+}
+
+/* Clean temporal list */
+void freeListTemp() {
+	int i;
+	for (i = 0; i <= numberOfCommonProcessesTemp; i++) {
+		free(arrayOfCommonProcessesTemp[i]);
+	}
+	currentPositionTempList = 0;
 }
 
 /* Get all process running without checking PID */
@@ -207,20 +211,17 @@ void makeListEveryProcessRunningWithoutPID() {
 			removeSpaceFromString(line);
 
 			// Parsing line
-			//printf("process before --%s--\n", line);
 			char *temp;
 			parsingLineCommonProcesses(line, &temp);
 			strcpy(line, temp);
 			free(temp);
-			//printf("process after --%s--\n", line);
-			//printf("\n");
+
 			// Memory allocation for each process
 			arrayOfCommonProcesses[currentPositionMainList] = malloc(
 					strlen(line) + 1);
 			// copy the process into array
 			strcpy(arrayOfCommonProcesses[currentPositionMainList], line);
 			numberOfCommonProcesses = currentPositionMainList;
-			//insertProcessArray(line);
 			currentPositionMainList++;
 		}
 	}
@@ -252,14 +253,11 @@ void makeListEveryProcessRunningTempWithoutPID() {
 			// Remove blanks from line
 			removeSpaceFromString(line);
 			// Parsing line
-			//printf("process before --%s--\n", line);
 			char *temp;
 			parsingLineCommonProcesses(line, &temp);
 			strcpy(line, temp);
 			free(temp);
 
-			//printf("process after --%s--\n", line);
-			//printf("\n");
 			// Memory allocation for each process
 			arrayOfCommonProcessesTemp[currentPositionTempList] = malloc(
 					strlen(line) + 1);
@@ -270,28 +268,6 @@ void makeListEveryProcessRunningTempWithoutPID() {
 		}
 	}
 	fclose(fpv7);
-}
-
-/* Check if the process exists inside of the list */
-int checkIfTheProcessExistsOnList(char * process) {
-	int found = 0;
-	int i;
-
-	for (i = 0; i <= numberOfCommonProcesses; i++) {
-		//printf("Comparing ---%s--- and ---%s----\n", process, arrayOfCommonProcesses[i]);
-		if (strcmp(process, arrayOfCommonProcesses[i]) == 0) {
-			found = 1;
-		}
-	}
-	/* The process exists within array */
-	if (found == 1) {
-		return 1;
-	} else {
-		if (found == 0) {
-			return 0;
-		}
-	}
-	return 0;
 }
 
 /*Insert process in Array */
@@ -352,9 +328,64 @@ void removeProcessOnListCommon(char * process) {
 	}
 }
 
+/* Insert process in main list without memory leak */
+void insertProcessOnListCommonWithoutMemoryLeak(char * proce) {
+	// Memory allocation for each process
+	arrayOfCommonProcesses[currentPositionMainList] = malloc(strlen(proce) + 1);
+	// copy the process into array
+	strcpy(arrayOfCommonProcesses[currentPositionMainList], proce);
+	numberOfCommonProcesses = currentPositionMainList;
+	currentPositionMainList++;
+}
 
+/* Remove a specific process without memory leak */
+void removeProcessOnListCommonWithoutMemoryLeak(char * process) {
+	int i;
+	for (i = 0; i <= numberOfCommonProcesses; i++) {
+		if ((arrayOfCommonProcesses[i] != NULL) && (arrayOfCommonProcesses[i]!='\0') && (strlen(arrayOfCommonProcesses[i])!=0)) {
+			if (strcmp(arrayOfCommonProcesses[i], process) == 0) { // valgrind is complaining in this line
+				free(arrayOfCommonProcesses[i]);
+				arrayOfCommonProcesses[i] = NULL;
 
+			}
+		}
+	}
+	/* check number of real processes into the list */
+	int c;
+	int counter=0;
+	for (c=0; c<= numberOfCommonProcesses;c++){
+		if (arrayOfCommonProcesses[c]!=NULL){
+			counter++;
+		}
+	}
+	/* Assign the number of real processes to the current position in main list */
+	currentPositionMainList=counter;
+	/* Assign the number of real processes to the corresponding variable */
+	numberOfCommonProcesses=counter;
+}
 
+/* Check if the process exists inside of the list */
+int checkIfTheProcessExistsOnList(char * process) {
+	int found = 0;
+	int i;
+
+	for (i = 0; i <= numberOfCommonProcesses; i++) {
+		if (arrayOfCommonProcesses[i]) {
+			if (strcmp(process, arrayOfCommonProcesses[i]) == 0) {
+				found = 1;
+			}
+		}
+	}
+	/* The process exists within array */
+	if (found == 1) {
+		return 1;
+	} else {
+		if (found == 0) {
+			return 0;
+		}
+	}
+	return 0;
+}
 
 /* Check if one common process is a critical process*/
 int checkIfOneCommonProcessIsCriticalProcess(char * process) {
@@ -369,10 +400,8 @@ int checkIfOneCommonProcessIsCriticalProcess(char * process) {
 
 	/* try to find the process inside of arrayOfProcesses */
 	for (p = 0; p < numberOfProcesses; p++) { // care with numberOfProcesses
-		//printf("Comparing p1=--%s-- with p2=--%s--\n", temp1, arrayOfProcesses[p]);
 		if (strcmp(temp1, arrayOfProcesses[p]) == 0) {
 			foundOneProcess = 1;
-
 		}
 	}
 
@@ -385,6 +414,10 @@ int checkIfOneCommonProcessIsCriticalProcess(char * process) {
 	}
 	return 0;
 }
+
+
+
+
 
 /* Check if there are new processes*/
 void checkNewProcesses() {
@@ -418,8 +451,6 @@ void checkNewProcesses() {
 					snprintf(temp_string, MAX_LENGHT_TEMP_STRING, "%s\n",
 							arrayOfCommonProcessesTemp[s]);
 					//transferEvent(my_id, COMMON_PROCESS_ON, temp_string);
-					printf("Number of processes in the list %d\n",
-							numberOfCommonProcesses);
 
 					insertProcessOnListCommon(arrayOfCommonProcessesTemp[s]);
 					fflush(stdout);
@@ -431,6 +462,7 @@ void checkNewProcesses() {
 		found = -1;
 	}
 }
+
 /* check if there are new termination processes */
 void checkTerminationProcesses() {
 	int h;
@@ -452,7 +484,7 @@ void checkTerminationProcesses() {
 				char * cpyToCompare = malloc(
 						strlen(arrayOfCommonProcesses[h]) + 1);
 				strcpy(cpyToCompare, arrayOfCommonProcesses[h]);
-				//printf("Helloooooooo\n");
+
 				if (checkIfOneCommonProcessIsCriticalProcess(cpyToCompare)
 						== 0) {
 					printf("Common termination process: ---%s--\n",
@@ -462,20 +494,108 @@ void checkTerminationProcesses() {
 					snprintf(temp_string, MAX_LENGHT_TEMP_STRING, "%s\n",
 							arrayOfCommonProcesses[h]);
 					//transferEvent(my_id, COMMON_PROCESS_OFF, temp_string);
-					printf("Number of processes in the list %d\n",
-							numberOfCommonProcesses);
+
 					removeProcessOnListCommon(arrayOfCommonProcesses[h]);
 					fflush(stdout);
 					free(cpyToCompare);
-				}				//else{
-								//	printf("Critical process %s is terminated\n", arrayOfCommonProcesses[h]);
-								//}
-
+				}
 			}
 		}
 		found = -1;
 	}
 }
+
+/* Check new processes without losing memory */
+void checkNewProcessesWithoutMemoryLeak() {
+	int s;
+	int d;
+	int found = -1;
+	char temp_string[MAX_LENGHT_TEMP_STRING];
+
+	// check if there is a new process to include in the main list of processes
+	for (s = 0; s <= numberOfCommonProcessesTemp; s++) {
+		for (d = 0; d <= numberOfCommonProcesses; d++) {
+			if (arrayOfCommonProcesses[d] != NULL ) {
+				if (strcmp(arrayOfCommonProcessesTemp[s],
+						arrayOfCommonProcesses[d]) == 0) {
+					found = 0;
+				}
+			}
+		}
+		/* if found==-1 outside loop means there is a new process*/
+		if (found == -1) {
+			if ((checkIfTheProcessExistsOnList(arrayOfCommonProcessesTemp[s])
+					== 0)) {
+				char * cpyToCompare = malloc(
+						strlen(arrayOfCommonProcessesTemp[s]) + 1);
+				strcpy(cpyToCompare, arrayOfCommonProcessesTemp[s]);
+				if (checkIfOneCommonProcessIsCriticalProcess(cpyToCompare)
+						== 0) {
+
+					printf("Common process activate: ----%s---\n",
+							arrayOfCommonProcessesTemp[s]);
+
+					/* Event detail information */
+					snprintf(temp_string, MAX_LENGHT_TEMP_STRING, "%s\n",
+							arrayOfCommonProcessesTemp[s]);
+					//transferEvent(my_id, COMMON_PROCESS_ON, temp_string);
+
+					insertProcessOnListCommonWithoutMemoryLeak(
+							arrayOfCommonProcessesTemp[s]);
+					fflush(stdout);
+
+				}
+				free(cpyToCompare);
+			}
+		}
+		found = -1;
+	}
+}
+
+/* Check termination processes without losing memory */
+void checkTerminationProcessesWithoutMemoryLeak() {
+	int h;
+	int k;
+	int found = -1;
+	char temp_string[MAX_LENGHT_TEMP_STRING];
+
+	// check if each process from main list is inside of temp list
+	for (h = 0; h <= numberOfCommonProcesses; h++) {
+		if (arrayOfCommonProcesses[h] != NULL ) {
+			for (k = 0; k <= numberOfCommonProcessesTemp; k++) {
+				if (strcmp(arrayOfCommonProcesses[h],
+						arrayOfCommonProcessesTemp[k]) == 0) {
+					found = 0;
+				}
+			}
+			/* if found==-1 outside loop means there is a deactivate process */
+			if (found == -1) {
+				char * cpyToCompare = malloc(
+						strlen(arrayOfCommonProcesses[h]) + 1);
+				strcpy(cpyToCompare, arrayOfCommonProcesses[h]);
+
+				if (checkIfOneCommonProcessIsCriticalProcess(cpyToCompare)
+						== 0) {
+					printf("Common termination process: ---%s--\n",
+							arrayOfCommonProcesses[h]);
+
+					/* Event detail information */
+					snprintf(temp_string, MAX_LENGHT_TEMP_STRING, "%s\n",
+							arrayOfCommonProcesses[h]);
+					//transferEvent(my_id, COMMON_PROCESS_OFF, temp_string);
+
+					removeProcessOnListCommonWithoutMemoryLeak(
+							arrayOfCommonProcesses[h]);
+					fflush(stdout);
+					free(cpyToCompare);
+				}
+			}
+
+			found = -1;
+		}
+	}
+}
+
 void freeMainList() {
 	int i;
 	for (i = 0; i <= numberOfCommonProcesses + 1; i++) {
@@ -483,24 +603,14 @@ void freeMainList() {
 	}
 }
 
-void freeListTemp() {
-	int i;
-	for (i = 0; i <= numberOfCommonProcessesTemp; i++) {
-		free(arrayOfCommonProcessesTemp[i]);
-	}
-	currentPositionTempList = 0;
-}
+
 
 /* Check if there is any process activate or deactivate */
 void checkAnyActivationOrTerminationProcess() {
 	makeListEveryProcessRunningTempWithoutPID();
-	printf("NumberProcessesMain: %d NumberProcessesTemp: %d\n",
-			numberOfCommonProcesses, numberOfCommonProcessesTemp);
-	//printArray2();
-	checkNewProcesses();
-	checkTerminationProcesses();
+	checkNewProcessesWithoutMemoryLeak();
+	checkTerminationProcessesWithoutMemoryLeak();
 	freeListTemp();
-	//cleanListCommonProcessesTemp(arrayOfCommonProcessesTemp);
 }
 
 void initializeArrayOfProccesesOnlyTesting() {
@@ -518,10 +628,7 @@ int main(int argc, char *argv[]) {
 	makeListEveryProcessRunningWithoutPID();
 	for (;;) {
 		checkAnyActivationOrTerminationProcess();
-		sleep(3);
-		//printArray1();
-		//printf("NumberCommon: %d and numberTemp: %d\n", numberOfCommonProcesses, numberOfCommonProcessesTemp);
-		printf("Current position main list: %d\n", currentPositionMainList);
+		sleep(1.5);
 	}
 	freeMainList();
 	return 0;
