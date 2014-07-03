@@ -1,21 +1,16 @@
 <?php
 
-
-
 /** * Database config variables */ 
 define("DB_HOST", "db462711312.db.1and1.com"); 
 define("DB_USER", "dbo462711312");
 define("DB_PASSWORD", "arh217956");
 define("DB_DATABASE", "db462711312");
 
-
-// Connecting to database 
-	$con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD); 
-// selecting database 
-	mysql_select_db(DB_DATABASE);
-
 function signUp(){
-	
+
+	// Connecting to database 
+	$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD,DB_DATABASE);
+
 	/* Obtaining arguments from POST variable */
 	$id=null;
 	$nameHairdresser= $_POST['hairdresserName'];
@@ -25,10 +20,27 @@ function signUp(){
 	$timetableToSafe = $_POST['timeTable'];
 	$emailToSafe = $_POST['email'];
 	$phoneToSafe = $_POST['phoneNumber'];
+	$map = 'nothingBytheMomment';
+
 	
-	/* Query */
-$result = mysql_query("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciudad, provincia, horario, correo, telefono) VALUES ('$id', '$nameHairdresser', '$adressToSafe', '$cityToSafe', '$provinceToSafe', '$timetableToSafe', '$emailToSafe', '$phoneToSafe') ");
-	if($result){
+/* Prepare statement */
+if (!$stmt=$mysqli->prepare("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciudad, provincia, horario, correo, telefono, map) VALUES (?,?,?,?,?,?,?,?,?)")){
+	 echo 'Error: ' . $mysqli->error;
+	 return false;
+}
+
+/* Bind parameters*/
+if (!$stmt->bind_param("issssssss", $id,$nameHairdresser,$adressToSafe, $cityToSafe,$provinceToSafe, $timetableToSafe, $emailToSafe, $phoneToSafe,$map)) {
+	echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+/* Execute */
+if (!$stmt->execute()){
+	echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+/* If everything is ok show a message */
+	if($stmt){
 			echo "Su peluquería ha sido registrada correctamente";
 	}else{
 			echo "Ha ocurrido un error durante el registro";
@@ -36,19 +48,21 @@ $result = mysql_query("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciud
 }
 
 function check(){
+	/* Enable captcha */
 	JPluginHelper::importPlugin('captcha');
 	$post = JRequest::get('post');   
 	$dispatcher = JEventDispatcher::getInstance();
 	$res = $dispatcher->trigger('onInit',$post['dynamic_recaptcha_1']);
+	/* Check captcha */
 	if(!$res[0]){
 		die('Invalid Captcha');
 	}else{	
-	
+		/* If the gaps are not empty*/
 		if ( (!empty($_POST['hairdresserName'])) && (!empty($_POST['adress'])) && (!empty($_POST['city'])) && (!empty($_POST['province'])) && (!empty($_POST['timeTable']))  &&(!empty($_POST['email'])) && (!empty($_POST['phoneNumber']))  ){
 				signUp();
 				
 		}else{
-				echo "Ha ocurrido un error";
+				echo "Es necesario rellenar todos los campos";
 		}
 	}	
 	
