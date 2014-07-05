@@ -123,10 +123,15 @@ while($row=mysql_fetch_array($result)){
 }
 
 function check(){
-		if (!empty($_POST['hairdresserName'])){
+		if ((!empty($_POST['hairdresserName'])) && (!empty($_POST['city']))){
 				showInfoHairdresser();
 		}else{
-				echo "Ha ocurrido un error";
+			if (empty($_POST['hairdresserName'])){
+				echo "El nombre de la peluquería es dato obligatorio <br />";
+			}
+			if (empty($_POST['city'])){
+				echo "La ciudad es un dato obligatorio <br />";
+			}
 		}
 
 }
