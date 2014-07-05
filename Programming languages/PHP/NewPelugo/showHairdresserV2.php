@@ -1,9 +1,4 @@
 <?php
-echo "<b-->Fecha de hoy: "; 
-echo date("d-m-Y H:i:s"); 
-echo "<br />"; 
-echo "<br />"; 
-
 
 /** * Database config variables */ 
 define("DB_HOST", "db462711312.db.1and1.com"); 
@@ -24,12 +19,29 @@ $nameHairdresser= $_POST['hairdresserName'];
 $city= $_POST['city'];
 $province= $_POST['province'];
 
+// Remove spaces from hairdresser name
+$nameHairdresser= preg_replace( '/\s+/', ' ', $nameHairdresser );
+//echo $nameHairdresser. "<br />"; 
 /* Query */
 $result = mysql_query("SELECT * FROM peluquerias");
 
 /* Make a table with the results */
-echo "<table>";
-	echo "<tbody><tr><td><b>Peluquería</b></td><td><b>Dirección</b></td><td><b>Ciudad</b></td><td><b>Provincia</b></td><td><b>Horario</b></td><td><b>Correo</b></td><td><b>Teléfono</b></td></tr>"; 
+echo "<table id=\"hor-zebra\">";
+echo "<thead>";
+	echo "<tr>";
+		echo "<th scope=\"col\">Peluquería</th>";
+		echo "<th scope=\"col\">Dirección</th>";
+		echo "<th scope=\"col\">Ciudad</th>";
+		echo "<th scope=\"col\">Provincia</th>";
+		echo "<th scope=\"col\">Horario</th>";
+		echo "<th scope=\"col\">Correo</th>";
+		echo "<th scope=\"col\">Teléfono</th>";
+		echo "<th scope=\"col\">Mapa</th>";
+	echo "</tr>";
+echo "</thead>";
+
+echo "<tbody>";	
+	//echo "<tbody><tr><td><b>Peluquería</b></td><td><b>Dirección</b></td><td><b>Ciudad</b></td><td><b>Provincia</b></td><td><b>Horario</b></td><td><b>Correo</b></td><td><b>Teléfono</b></td><td><b>Mapa</b></td></tr>"; 
 
 $counterLinesFail=0;
 $counterTotalLines=0;
@@ -42,52 +54,57 @@ while($row=mysql_fetch_array($result)){
 	$email = $row['correo']; 
 	$mobilePhone = $row['telefono']; 
 	$confirmacion = $row['confirmacion']; 
+	 
 	  
-	$checkHairdresser = levenshtein($nameHairdresser, $hDresserName);  
+	$checkHairdresser = levenshtein($nameHairdresser, $hDresserName);
 	$checkCity = levenshtein($city, $cityToShow);
 	$checkProvince = levenshtein($province, $provinceToShow);
 	$levenshteinLain = 8;
 	
-	echo $checkHairdresser. "<br />";
-	echo $checkCity. "<br />";
-	echo $checkProvince. "<br />";
+	//echo $checkHairdresser. "<br />";
+	//echo $checkCity. "<br />";
+	//echo $checkProvince. "<br />";
 	
 	
-	if (($checkHairdresser<=$levenshteinLain) && ($checkCity<=$levenshteinLain) && ($checkProvince<=$levenshteinLain)){
-		echo "<tr>";
+	if (($checkHairdresser<=$levenshteinLain) && ($checkCity<=$levenshteinLain) && ($checkProvince==0)){
+		echo "<tr class=\"odd\">";
 	
-		echo "<td>";
-		$hDresserName = $row['nombre']; 
-		echo $row['nombre']; 	
-		echo "</td>"; 
+			echo "<td>";
+			$hDresserName = $row['nombre']; 
+			echo $row['nombre']; 	
+			echo "</td>"; 
 	 
-		echo "<td>"; 
-		echo $row['direccion']; 
-		$adressToShow = $row['direccion'];	 
-		echo "</td>"; 
+			echo "<td>"; 
+			echo $row['direccion']; 
+			$adressToShow = $row['direccion'];	 
+			echo "</td>"; 
 	 
-		echo "<td>";
-		echo $row['ciudad']; 
-		$cityToShow = $row['ciudad']; 
-		echo"</td>"; 
+			echo "<td>";
+			echo $row['ciudad']; 
+			$cityToShow = $row['ciudad']; 
+			echo"</td>"; 
 	 
-		echo "<td>" ;
-		echo $row['provincia']; 
-		$provinceToShow = $row['provincia']; 
-		echo"</td>"; 
+			echo "<td>" ;
+			echo $row['provincia']; 
+			$provinceToShow = $row['provincia']; 
+			echo"</td>"; 
 	
-		echo "<td>";
-		echo $row['horario']; 
-		$timeTable = $row['horario']; 
-		echo"</td>"; 
+			echo "<td>";
+			echo $row['horario']; 
+			$timeTable = $row['horario']; 
+			echo"</td>"; 
 	
-		echo "<td>";
-		echo $row['correo'];	
-		echo"</td>"; 
+			echo "<td>";
+			echo $row['correo'];	
+			echo"</td>"; 
 	
-		echo "<td>";
-		echo $row['telefono']; 	
-		echo"</td>"; 
+			echo "<td>";
+			echo $row['telefono']; 	
+			echo"</td>"; 
+		
+			echo "<td>";
+			echo "<a href='".$row['map']."'>Ver mapa</a>";
+			echo "</td>";
 	
 		echo "</tr>";
 	
