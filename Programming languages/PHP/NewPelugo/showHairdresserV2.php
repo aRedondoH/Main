@@ -21,6 +21,10 @@ $province= $_POST['province'];
 
 // Remove spaces from hairdresser name
 $nameHairdresser= preg_replace( '/\s+/', ' ', $nameHairdresser );
+
+// City to lowercase
+$city = strtolower($city);
+
 //echo $nameHairdresser. "<br />"; 
 /* Query */
 $result = mysql_query("SELECT * FROM peluquerias");
@@ -66,7 +70,7 @@ while($row=mysql_fetch_array($result)){
 	//echo $checkProvince. "<br />";
 	
 	
-	if (($checkHairdresser<=$levenshteinLain) && ($checkCity<=$levenshteinLain) && ($checkProvince==0)){
+	if (($checkHairdresser<=$levenshteinLain) && ($checkCity<=1) && ($checkProvince==0)){
 		echo "<tr class=\"odd\">";
 	
 			echo "<td>";
