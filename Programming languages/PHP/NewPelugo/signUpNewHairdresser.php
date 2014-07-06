@@ -22,11 +22,29 @@ function signUpWithoutBind(){
         $timetableToSafe = $_POST['timeTable'];
         $emailToSafe = $_POST['email'];
         $phoneToSafe = $_POST['phoneNumber'];
+        $mapToShow = $_POST['map'];
+        
+        // if the map field is not empty
+			if(!empty($_POST['map'])){
+				// Create map file
+				$filename = $nameHairdresser.'Map.php';
+				$Content = $mapToShow;
+				// Open
+				$handle = fopen($_SERVER['DOCUMENT_ROOT']. '/php_pelugo/maps/' .$filename , 'x+');
+				// Write
+				fwrite($handle, $Content);
+				// Close
+				fclose($handle);
+				$mapToShow='http://www.pelugo.es/php_pelugo/maps/' .$filename;
+			}   
+		
         
         /* Query */
-$result = mysql_query("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciudad, provincia, horario, correo, telefono) VALUES ('$id', '$nameHairdresser', '$adressToSafe', '$cityToSafe', '$provinceToSafe', '$timetableToSafe', '$emailToSafe', '$phoneToSafe') ");
+$result = mysql_query("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciudad, provincia, horario, correo, telefono, map) VALUES ('$id', '$nameHairdresser', '$adressToSafe', '$cityToSafe', '$provinceToSafe', '$timetableToSafe', '$emailToSafe', '$phoneToSafe', '$mapToShow') ");
         if($result){
-                        echo "Su peluquería ha sido registrada correctamente";
+			
+			
+            echo "Su peluquería ha sido registrada correctamente";
         }else{
                         echo "Ha ocurrido un error durante el registro";
         }	
