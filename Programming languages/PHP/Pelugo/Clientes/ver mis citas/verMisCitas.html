@@ -1,0 +1,27 @@
+<h1>Ver mis citas</h1><!--?php
+echo "Fecha de hoy: ";
+echo "<b--><p>"; echo date("d-m-Y H:i:s"); echo ""; echo "<br />
+"; echo "</p><h3>&nbsp;</h3><p>A continuación se muestran tus citas actuales:</p><p>"; /** * Database config variables */ define("DB_HOST", "db462711312.db.1and1.com"); define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD. define("DB_PASSWORD", "arh217956");//Modificar por el password elegido define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial. // obtenemos el usuario actual $usuario_sesion = mysql_query("SELECT username FROM l3heb_session "); while($e=mysql_fetch_assoc($usuario_sesion)){ $usuario=$e["username"]; } // Connecting to database // public function connect() { $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD); // selecting database mysql_select_db(DB_DATABASE); $result = mysql_query("SELECT * FROM citas WHERE usuario='$usuario' "); echo ""; echo ""; $d = date("d"); $m = date("m"); $a = date("Y"); while($row=mysql_fetch_array($result)){ // si la cita ya se ha producido se introduce en el historial if ( $row['anio'] &lt;= $a ){ if ( $row['mes'] &lt;= $m){ if ( $row['dia'] &lt; $d){ //echo "Holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"; //echo "<br />
+"; $peluqueria = $row['peluqueria']; $usuario = $row['usuario']; $dia = $row['dia']; $mes = $row['mes']; $anio = $row['anio']; $hora = $row['hora']; $tipoDeCita = $row['tipoDeCita']; $confirmacion = $row['confirmacion']; $result2 = mysql_query("INSERT INTO historial(id_cita,peluqueria,cliente,dia,mes,anio,hora,tipoDeCita,confirmacion) VALUES(null,'$peluqueria','$usuario','$dia','$mes','$anio','$hora','$tipoDeCita','$confirmacion') "); $result3 = mysql_query("DELETE FROM citas WHERE usuario='$usuario' AND dia='$dia' AND mes='$mes' AND anio='$anio' "); }else{ echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; } //if interno } else{ echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; } } else{ echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; echo ""; } //depending on your own parameters of course, but the values must be in single quotes //echo $row['USER']; //echo $row['HORA_CITA']; //echo $row['CONFIRMACION']; //echo "<br />
+"; //depending on your own parameters of course, but the values must be in single quotes } echo "</p><table border="1" cellpadding="5" cellspacing="8" width="600"><tbody><tr><td><b>Cliente</b></td><td><b>Hora de la cita</b></td><td><b>Dia</b></td><td><b>Mes</b></td><td><b>Año</b></td><td><b>Tipo de cita</b></td><td><b>Peluquería</b></td><td><b>Confirmación</b></td></tr><tr><td>"; //echo "<b>Usuario: </b>"; $usuario=$row['usuario']; echo $row['usuario']; //echo "<br />
+"; echo"</td><td>"; //echo "<b>Hora de la cita: </b>"; echo $row['hora']; //echo "<br />
+"; echo "</td><td>"; //echo "<b>Dia: </b>"; echo $row['dia']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Mes: </b>"; echo $row['mes']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Año: </b>"; echo $row['anio']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Tipo de cita: </b>"; echo $row['tipoDeCita']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Peluqueria: </b>"; echo $row['peluqueria']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>La cita </b>"; echo $row['confirmacion']; echo " se encuentra confirmada"; echo "</td></tr><tr><td>"; //echo "<b>Usuario: </b>"; $usuario=$row['usuario']; echo $row['usuario']; //echo "<br />
+"; echo"</td><td>"; //echo "<b>Hora de la cita: </b>"; echo $row['hora']; //echo "<br />
+"; echo "</td><td>"; //echo "<b>Dia: </b>"; echo $row['dia']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Mes: </b>"; echo $row['mes']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Año: </b>"; echo $row['anio']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Tipo de cita: </b>"; echo $row['tipoDeCita']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Peluqueria: </b>"; echo $row['peluqueria']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>La cita </b>"; echo $row['confirmacion']; echo " se encuentra confirmada"; echo "</td></tr><tr><td>"; //echo "<b>Usuario: </b>"; $usuario=$row['usuario']; echo $row['usuario']; //echo "<br />
+"; echo"</td><td>"; //echo "<b>Hora de la cita: </b>"; echo $row['hora']; //echo "<br />
+"; echo "</td><td>"; //echo "<b>Dia: </b>"; echo $row['dia']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Mes: </b>"; echo $row['mes']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Año: </b>"; echo $row['anio']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Tipo de cita: </b>"; echo $row['tipoDeCita']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>Peluqueria: </b>"; echo $row['peluqueria']; echo"</td><td>"; //echo "<br />
+"; //echo "<b>La cita </b>"; echo $row['confirmacion']; echo " se encuentra confirmada"; echo "</td></tr></tbody></table><p>"; ?&gt;</p>

@@ -1,0 +1,83 @@
+<p>&nbsp;</p><meta content="text/html; charset=UTF-8" http-equiv="content-type" /><p>&nbsp;</p><title></title><p>&nbsp;</p><link href="/style.css" media="screen" rel="stylesheet" type="text/css" /><!-- custom theme css --><p>&nbsp;</p><link href="/themes/blue/style.css" media="screen" rel="stylesheet" type="text/css" /><p>&nbsp;</p><link href="/media/system/css/botonesFashion.css" media="screen" rel="stylesheet" type="text/css" /><script src="/media/system/js/jscal2.js"></script><script src="/media/system/js/es.js"></script><p>&nbsp;</p><link href="/jscal2.css" rel="stylesheet" type="text/css" /><p>&nbsp;</p><link href="/border-radius.css" rel="stylesheet" type="text/css" /><p>&nbsp;</p><link href="/steel.css" rel="stylesheet" type="text/css" /><script type="text/javascript" src="/script/jquery-1.4.2.js"></script><script type="text/javascript" src="/script/jquery.tools.js"></script><script type="text/javascript" src="/script/ikonik.js"></script>
+
+
+
+
+<!--?php
+/**
+ * Database config variables
+ */
+define("DB_HOST", "db462711312.db.1and1.com");
+define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD.
+define("DB_PASSWORD", "arh217956");//Modificar por el password elegido
+define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial.
+    // Connecting to database
+   // public function connect() {
+        // connecting to mysql
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+        // selecting database
+        mysql_select_db(DB_DATABASE);
+
+if(isset($_POST['submit'])){
+// Los delimitadores pueden ser barra, punto o guión
+if (isset($_POST[checkbox])){
+ echo "hola".$fecha;
+$fecha=$_POST['fecha'];
+list($dia, $mes, $anio) = split('[/.-]', $fecha);
+}
+ 
+}
+?--><h1>Citas peluquería</h1><form action="http://www.pelugo.es/index.php/citasPeluqueria" method="post"><!--<p>
+    Indique el nombre de su peluquer&iacute;a:</p>
+<p>
+    <select name="peluqueria"> Alberto<option value="Alberto">Alberto</option>Caraculo<option value="Caraculo">Caraculo</option></select></p>
+<br />--><h3>&nbsp;</h3><p>Seleccione la fecha para visualizar sus citas:</p><!--<form action="http://www.pelugo.es/index.php/citasPeluqueria" method="post">-->Fecha: <input id="f_date1" name="fecha" size="10" /><button id="f_btn1"><img src="http://www.pelugo.es/images/botones/calendario_small.png" style="height: 25px; width: 25px" /></button><script type="text/javascript">//<![CDATA[
+
+      var cal = Calendar.setup({
+          onSelect: function(cal) { cal.hide() },
+          showTime: true
+      });
+      cal.manageFields("f_btn1", "f_date1", "%d-%m-%Y");
+
+
+    //]]></script><!--</form>--><br />
+<input name="checkbox" type="radio" value="1234" />Ya tengo segura mi cita<br />
+<input class="button large blue" name="submit" type="submit" value="Ver mis citas" />&nbsp;</form><p><br />
+<br />
+&nbsp;</p><!--?php
+if(isset($_POST['submit'])){
+// Los delimitadores pueden ser barra, punto o guión
+//if (isset($_POST[checkbox])){
+/**
+ * Database config variables
+ */
+define("DB_HOST", "db462711312.db.1and1.com");
+define("DB_USER", "dbo462711312");//cambiar por el nombre de usuario definido en la configuracion de la BD.
+define("DB_PASSWORD", "arh217956");//Modificar por el password elegido
+define("DB_DATABASE", "db462711312");//Nombre de la base de datos reemplazar si se utilizo otro diferente al mencionado en el tutorial.
+
+  // obtenemos el usuario actual
+    $usuario_sesion = mysql_query("SELECT username FROM l3heb_session ");
+    
+        while($e=mysql_fetch_assoc($usuario_sesion)){	    
+            $usuario=$e["username"];	    
+    }   
+ 
+    // Connecting to database
+   // public function connect() {
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+        // selecting database
+        mysql_select_db(DB_DATABASE);
+
+$pelu = $_POST['peluqueria'];
+//echo "$pelu";
+//echo "$usuario";
+$result = mysql_query("SELECT * FROM citas WHERE peluqueria='$usuario' ");
+echo "<table width='600' cellpadding='5' cellspacing='8' border='1'--><p>"; echo "<b>Cliente</b><b>Hora</b><b>Dia</b><b>Mes</b><b>Año</b><b>Tipo de cita</b><b>Peluquería</b><b>Confirmación</b><b>Confirmar</b>"; echo "\n"; while($row=mysql_fetch_array($result)){ //depending on your own parameters of course, but the values must be in single quotes echo ""; echo ""; //echo "<b>Usuario: </b>"; $usuario=$row['usuario']; echo $row['usuario']; echo "<br />
+"; echo" "; //echo "<b>Hora de la cita: </b>"; echo $row['hora']; echo "<br />
+"; echo " "; //echo "<b>Dia: </b>"; echo $row['dia']; echo" "; echo "<br />
+"; //echo "<b>Mes: </b>"; echo $row['mes']; echo" "; echo "<br />
+"; //echo "<b>Año: </b>"; echo $row['anio']; echo" "; echo "<br />
+"; //echo "<b>Tipo de cita: </b>"; echo $row['tipoDeCita']; echo" "; echo "<br />
+"; //echo "<b>Peluqueria: </b>"; echo $row['peluqueria']; echo" "; echo "<br />
+"; //echo "<b>La cita </b>"; echo $row['confirmacion']; echo " se encuentra confirmada"; echo " "; } } echo "</p><p>"; ?&gt;</p>

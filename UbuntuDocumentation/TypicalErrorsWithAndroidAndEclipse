@@ -1,0 +1,16 @@
+How to fix the error "permission denied"
+	- Click on the project with the second button
+	- Go to Android tools-->select "Fix project properties"
+Other method to fix the error "permission denied"
+	- chown -R user:user /bin/eclipse e.g. "chown -R alberto:alberto /bin/eclipse"
+How to grant permission to Avd 
+	- ~/android-sdks/platform-tools $ ./adb shell
+ 	- su
+ 	- mount -o rw,remount rootfs / 
+ 	- chmod 777 /mnt/sdcard 
+ 	- exit
+ 	- exit
+
+how to change the owner of the files in a folder 
+	- chown user:user folder e.g. "chown -R alberto:alberto /home/alberto/Desktop/Entornos Eclipse/Proyectos eclipse	"
+

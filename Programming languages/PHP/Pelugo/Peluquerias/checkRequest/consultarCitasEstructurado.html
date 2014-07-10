@@ -1,0 +1,49 @@
+<p>&nbsp;</p>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<p>&nbsp;</p>
+<title></title><p>&nbsp;</p>
+<link href="/style.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="media/system/css/style.css" media="screen" rel="stylesheet" type="text/css" />
+<!-- custom theme css -->
+<p>&nbsp;</p>
+<link href="/themes/blue/style.css" media="screen" rel="stylesheet" type="text/css" />
+<p>&nbsp;</p>
+<link href="/media/system/css/botonesFashion.css" media="screen" rel="stylesheet" type="text/css" />
+<script src="/media/system/js/jscal2.js"></script>
+<script src="/media/system/js/es.js"></script><p>&nbsp;</p>
+<link href="/jscal2.css" rel="stylesheet" type="text/css" />
+<p>&nbsp;</p>
+<link href="/border-radius.css" rel="stylesheet" type="text/css" />
+<p>&nbsp;</p>
+<link href="/steel.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/script/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="/script/jquery.tools.js"></script>
+<script type="text/javascript" src="/script/ikonik.js"></script>
+
+
+<h1>Citas peluquería</h1>
+<form action="http://www.pelugo.es/index.php/citasPeluqueria" method="post">
+
+<?php include 'php_articulos/peluquerias/consultar_citas/obtenerFecha.php';?>
+	
+<h3>&nbsp;</h3>
+<p>Seleccione la fecha para visualizar sus citas:</p>
+
+Fecha: <input id="f_date1" name="fecha" size="10" />
+<button id="f_btn1"><img src="http://www.pelugo.es/images/botones/calendario_small.png" style="height: 20px; width: 20px" /></button><script type="text/javascript">//<![CDATA[
+
+      var cal = Calendar.setup({
+          onSelect: function(cal) { cal.hide() },
+          showTime: true
+      });
+      cal.manageFields("f_btn1", "f_date1", "%d-%m-%Y");
+
+
+    //]]></script><!--</form>--><br />
+<input name="checkbox" type="radio" value="1234" />Ya tengo segura mi cita<br />
+<input class="button large blue" name="submit" type="submit" value="Ver mis citas" />&nbsp;</form><p><br />
+<br />
+&nbsp;</p>
+
+<?php include 'php_articulos/peluquerias/consultar_citas/mostrarCitas.php';?>
+

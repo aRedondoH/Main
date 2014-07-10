@@ -1,0 +1,68 @@
+<link href="media/system/css/botonesFashion.css" media="screen" rel="stylesheet" type="text/css" />
+<form action="http://www.pelugo.es/index.php/component/content/article?id=31" method="post">
+	<h2>Registro de Peluquerías</h2>
+	<h3>Inserte los datos de su peluquería</h3>
+	<p><b>Nombre de la Peluquería *: <input name="nombre" type="text" /></b></p>
+	<p><b>Elija un usuario *: <input name="usuario" type="text" /></b></p>
+	<p><b>Correo electrónico *: <input name="correo" type="text" /></b></p>
+	<p><b>Teléfono de contacto *: <input name="telefono" type="text" /></b></p>
+	<p><b>Dirección*: <input name="direccion" type="text" /></b></p>
+	
+	<h3>Seleccione sus horarios:</h3>
+	<b>Horario de Mañana:</b>
+	<table>
+		<tbody>
+		<tr>
+			<td><input name="_8_30" type="checkbox" value="1234" />8:30</td>
+			<td><input name="_9_" type="checkbox" value="1234" />9:00</td>
+			<td><input name="_9_30" type="checkbox" value="1234" />9:30</td>
+			<td><input name="_10_" type="checkbox" value="1234" />10:00</td>
+			<td><input name="_10_30" type="checkbox" value="1234" />10:30</td>
+			<td><input name="_11_" type="checkbox" value="1234" />11:00</td>
+			<td><input name="_11_30" type="checkbox" value="1234" />11:30</td>
+		</tr>
+		<tr>
+			<td><input name="_12_" type="checkbox" value="1234" />12:00</td>
+			<td><input name="_12_30" type="checkbox" value="1234" />12:30</td>
+			<td><input name="_13_" type="checkbox" value="1234" />13:00</td>
+			<td><input name="_13_30" type="checkbox" value="1234" />13:30</td>
+			<td><input name="_14_" type="checkbox" value="1234" />14:00</td>
+			<td><input name="_14_30" type="checkbox" value="1234" />14:30</td>
+			<td><input name="_15_" type="checkbox" value="1234" />15:00</td>
+		</tr>
+		</tbody>
+	</table>
+	<b>Horario de Tarde:</b>
+	<table>
+		<tbody>
+		<tr>
+			<td><input name="_15_30" type="checkbox" value="1234" />15:30</td>
+			<td><input name="_16_" type="checkbox" value="1234" />16:00</td>
+			<td><input name="_16_30" type="checkbox" value="1234" />16:30</td>
+			<td><input name="_17_" type="checkbox" value="1234" />17:00</td>
+			<td><input name="_17_30" type="checkbox" value="1234" />17:30</td>
+			<td><input name="_18_" type="checkbox" value="1234" />18:00</td>
+			<td><input name="_18_30" type="checkbox" value="1234" />18:30</td>
+		</tr>
+		<tr>
+			<td><input name="_19_" type="checkbox" value="1234" />19:00</td>
+			<td><input name="_19_30" type="checkbox" value="1234" />19:30</td>
+			<td><input name="_20_" type="checkbox" value="1234" />20:00</td>
+			<td><input name="_20_30" type="checkbox" value="1234" />20:30</td>
+			<td><input name="_21_" type="checkbox" value="1234" />21:00</td>
+			<td><input name="_21_30" type="checkbox" value="1234" />21:30</td>
+			<td><input name="_22_" type="checkbox" value="1234" />22:00</td>
+		</tr>
+		<tr>
+			<td><input name="_22_30" type="checkbox" value="1234" />22:30</td>
+			<td><input name="_23_" type="checkbox" value="1234" />23:00</td>
+		</tr>
+		</tbody>
+	</table>
+	<p><b>Máximo de clientes por hora: <b><input name="nClientes" type="text" /></b></b></p>
+	<p style="margin-top:1.5em"><button class="button large blue" onclick="window.location.reload()">Registrarse</button></p>
+	<input name="checkbox" type="radio" value="1234" />Estoy seguro/a de registrar mi peluquería<br />
+	
+<?php include 'php_articulos/general/registroPeluquerias/confirmarRegistroPeluqueria.php';?>	
+<b>*Campo Obligatorio</b> </b></b>
+</form>
