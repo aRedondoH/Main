@@ -17,13 +17,13 @@ $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD,DB_DATABASE);
 
 
 /* Prepare statement */
-if (!$stmt=$mysqli->prepare("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciudad, provincia, horario, correo, telefono, map) VALUES (?,?,?,?,?,?,?,?,?)")){
+if (!$stmt=$mysqli->prepare("INSERT INTO peluquerias (id_pelu, nombre, direccion, ciudad, provincia, horario, correo, telefono, map) VALUES (0,?,?,?,'u','u','u',8,'u')")){
 echo 'Error: ' . $mysqli->error;
 return false;
 }
 
 /* Bind parameters*/
-if (!$stmt->bind_param("issssssss", $id,$nameHairdresser,$adressToSafe, $cityToSafe,$provinceToSafe, $timetableToSafe, $emailToSafe, $phoneToSafe,$map)) {
+if (!$stmt->bind_param('sss',$nameHairdresser,$adressToSafe, $cityToSafe)) {
 echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
 }
 

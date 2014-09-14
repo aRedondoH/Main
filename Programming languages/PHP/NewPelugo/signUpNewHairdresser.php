@@ -36,6 +36,8 @@ function signUpWithoutBind(){
 				// Close
 				fclose($handle);
 				$mapToShow='http://www.pelugo.es/php_pelugo/maps/' .$filename;
+			}else{
+				$mapToShow='http://www.pelugo.es/php_pelugo/maps/MadridMap.php';
 			}   
 		
         
