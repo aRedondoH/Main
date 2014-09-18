@@ -1,0 +1,98 @@
+Introduce los datos de tu peluquería
+
+ {source}
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-53108808-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+{/source}
+
+{source}
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Buscar Peluquería</title>
+</head>
+<body id="body-color">
+<div id="Sign-Up">
+<fieldset style="width:30%">
+<table border="0">
+<form method="POST" action="www.pelugo.es/index.php?option=com_content&view=article&id=6:sign-up-v2&catid=2:uncategorised&Itemid=110">
+
+
+<tr>
+<td>Nombre de la peluquería <b>(no incluir "peluqueria" en el nombre)</b></td><td><input type="text" name="hairdresserName"></td><td><b>*requerido</b></td> 
+</tr>
+
+<tr>
+<td>Direccion</td><td><input type="text" name="adress"></td><td><b>*requerido</b></td> 
+</tr>
+
+<tr>
+<td>Ciudad, <b>ej: Leganés, Alcorcón, ...</b></td><td><input type="text" name="city"></td><td><b>*requerido</b></td>
+</tr>
+
+<tr>
+<td>Provincia, <b>ej: Madrid, Almería, Pontevedra, ...</b></td><td><input type="text" name="province"></td><td><b>*requerido</b></td> 
+</tr>
+
+<tr>
+<td>Horario</td><td><input type="text" name="timeTable"></td><td><b>*requerido</b></td>
+</tr>
+
+<tr>
+<td>Correo <b>(Si no dispone de correo electrónico inserte "vacio" en el campo requerido)</b></td><td><input type="text" name="email"></td><td><b>*requerido</b></td>
+</tr>
+
+<tr>
+<td>Telefono de contacto <b>(insertar sin espacios)</b></td><td><input type="text" name="phoneNumber"></td><td><b>*requerido</b></td> 
+</tr>
+
+<tr>
+<td>Mapa <b>(opcional)</b></td><td><input type="text" name="map"></td><td><a href=http://www.map-embed.com target="_blank">Generar mapa automáticamente(pegar link generado)</a></td>
+
+</tr>
+
+ 
+
+<tr>
+
+<td></td>
+
+</tr>
+
+{source}
+
+<?php
+JPluginHelper::importPlugin('captcha');
+$dispatcher = JDispatcher::getInstance();
+$dispatcher->trigger('onInit','dynamic_recaptcha_1');
+
+ 
+
+?>
+{/source}
+
+<tr>
+
+<td><div id="dynamic_recaptcha_1"></div></td>
+
+</tr>
+<tr>
+<td><input id="button" type="submit" name="submit" value="Registrarse gratis"></td>
+</tr>
+</form>
+</table>
+</fieldset>
+</div>
+</body>
+</html>
+{/source}
+
+ 

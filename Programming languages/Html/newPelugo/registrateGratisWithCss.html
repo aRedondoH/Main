@@ -1,0 +1,141 @@
+{source}
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+<link href="http://www.pelugo.es/css/pepe.css" rel="stylesheet">
+<div class="testbox">
+  <h1>Introduce los datos de tu peluquería</h1>
+  <table border="0">
+  <form method="POST" action="index.php?option=com_content&view=article&id=314:sign-up-v2-testing&catid=2:uncategorised&Itemid=110">
+  <!--    <hr>
+    <div class="accounttype">
+      <input type="radio" value="None" id="radioOne" name="account" checked/>
+      <label for="radioOne" class="radio" chec>Personal</label>
+      <input type="radio" value="None" id="radioTwo" name="account" />
+      <label for="radioTwo" class="radio">Company</label>
+    </div> -->
+  <hr>
+  <tr>
+  <td><input type="text" name="hairdresserName" placeholder="Nombre de la peluqueria" required/></td><td><b>(no incluir "peluqueria" en el nombre)</b></td>
+  </tr>  
+  <!--<label id="icon" for="name"><i class="icon-envelope "></i></label>-->
+ 
+  <tr>
+  <td><input type="text" name="adress" placeholder="Dirección" required/></td>
+  </tr>
+ 
+  <!--<label id="icon" for="name"><i class="icon-user"></i></label>-->
+  <tr>
+  <td><input type="text" name="city" placeholder="Ciudad" required/></td><td><b>ej: Leganés, Alcorcón, ...</b></td>
+  </tr>
+ 
+  <tr>
+  <td><select name="province" >
+<option value="" disabled selected>Provincia</option>
+<option>Álava</option>
+<option>Albacete</option>
+<option>Alicante</option>
+<option>Almería</option>
+<option>Asturias</option>
+<option>Ávila</option>
+<option>Badajoz</option>
+<option>Barcelona</option>
+
+<option>Baleares</option>
+
+<option>Burgos</option>
+<option>Cáceres</option>
+<option>Cádiz</option>
+<option>Cantabria</option>
+<option>Castellón</option>
+<option>Ciudad Real</option>
+<option>Córdoba</option>
+<option>La Coruña</option>
+<option>Cuenca</option>
+<option>Gerona</option>
+<option>Granada</option>
+<option>Guadalajara</option>
+<option>Guipúzcua</option>
+<option>Huelva</option>
+<option>Huesca</option>
+
+<option>Jaén</option>
+<option>León</option>
+<option>Lérida</option>
+<option>Lugo</option>
+<option>Madrid</option>
+<option>Málaga</option>
+<option>Murcia</option>
+<option>Navarra</option>
+<option>Orense</option>
+<option>Palencia</option>
+<option>Las Palmas</option>
+<option>Pontevedra</option>
+<option>La Rioja</option>
+<option>Salamanca</option>
+<option>Segovia</option>
+<option>Sevilla</option>
+<option>Soria</option>
+<option>Tarragona</option>
+<option>Tenerife</option>
+<option>Teruel</option>
+<option>Toledo</option>
+<option>Valencia</option>
+<option>Valladolid</option>
+<option>Vizcaya</option>
+<option>Zamora</option>
+<option>Zaragoza</option>
+
+</select></td>
+</tr>
+
+  <tr>
+  <td><input type="text" name="timeTable" placeholder="Horario" required/></td>
+  </tr>
+ 
+  <tr>
+  <td><input type="text" name="email" placeholder="Email" required/></td><td><b>(Si no dispone de correo electrónico inserte "vacio" en el campo requerido, aunque es importante para recibir información de PeluGo)</b></td>
+  </tr>
+ 
+  <tr>
+  <td><input type="text" name="phoneNumber" placeholder="Teléfono de contacto" required/></td>
+  </tr>
+ 
+  <tr>
+  <td><input type="text" name="map" placeholder="Mapa(opcional)"></td><td><a href=http://www.map-embed.com target="_blank">Generar mapa automáticamente(pegar link generado)</a></td>
+  </tr>
+  <!--<label id="icon" for="name"><i class="icon-shield"></i></label>-->
+  <!--<tr>
+  <td><input type="password" name="name" id="name" placeholder="Password" required/></td>
+  </tr>-->
+ 
+  <!--<div class="gender">
+    <input type="radio" value="None" id="male" name="gender" checked/>
+    <label for="male" class="radio" chec>Male</label>
+    <input type="radio" value="None" id="female" name="gender" />
+    <label for="female" class="radio">Female</label>
+   </div>-->
+   <!--<tr>
+   <td><a href="#" type="submit" name="submit" class="button">Registrarse gratis</a></td>
+    <tr>--> 
+ </table>
+    
+<?php
+// Current Captcha code
+JPluginHelper::importPlugin('captcha');
+$dispatcher = JDispatcher::getInstance();
+$dispatcher->trigger('onInit','dynamic_recaptcha_1');    
+?>
+    <div id="dynamic_recaptcha_1"></div>  
+    <input id="button" type="submit" name="submit" value="Registrarse gratis">   
+  </form>
+
+      
+</table>
+</fieldset>
+</div>
+</body>
+</html>
+{/source}
+
+
+
+
