@@ -7,10 +7,27 @@
 #include <pdh.h>
 #include <pdhmsg.h>
 
+#include <tchar.h>
+#include <clocale>
+#include <cstdlib>
+#include <comdef.h>
+#include <wchar.h>
+
 #pragma comment(lib, "pdh.lib")
 
 CONST PWSTR COUNTER_OBJECT = L"Process";
 
+#define MAX_NUMBER_OF_PROCESSES 300
+char *arrayOfCommonProcesses[MAX_NUMBER_OF_PROCESSES];
+
+wchar_t *convertCharArrayToLPCWSTR(const char* charArray)
+{
+	wchar_t* wString = new wchar_t[4096];
+	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
+	return wString;
+}
+
+void SomeFunction(LPWSTR aString);
 
 INT getcpuload(LPWSTR pTemp)
 {
@@ -34,8 +51,13 @@ INT getcpuload(LPWSTR pTemp)
 		//PdhAddCounter(query, TEXT("\\Processor(_Total)\\% Processor Time"), 0, &counter); // A total of ALL CPU's in the system
 		//PdhAddCounter(query, TEXT("\\Process(OUTLOOK)\\% Processor Time"), 0, &counter);
 		//PdhAddCounter(query, TEXT("\\Process(calc)\\% Processor Time"), 0, &counter); // this line works
-		wprintf(L"%s ", pTemp);
-		PdhAddCounter(query, TEXT("\\Process(firefox)\\% Processor Time"), 0, &counter); // this line works
+		
+
+		
+		TCHAR * szCounterName;
+		szCounterName = new TCHAR[MAX_PATH];
+		_stprintf(szCounterName, TEXT("\\Process(%s)\\%% Processor Time"), pTemp);
+		PdhAddCounter(query,szCounterName, 0, &counter); // this line works
 		
 		//PdhAddCounter(query, TEXT("\\Process(pTemp)\\% Processor Time"), 0, &counter);
 		//PdhAddCounter(query, TEXT("\\Processor(0)\\% Processor Time"),0,&counter);    // For systems with more than one CPU (Cpu0)
@@ -65,10 +87,10 @@ INT getcpuload(LPWSTR pTemp)
 		return 0;
 	}
 	cput = value.doubleValue;
-
-	printf("\n\n"
-		"CPU Total usage: %3d%%\n", cput);
-
+	
+		wprintf(L" Process: %s ", pTemp);
+		printf("CPU usage: %3d%%\n", cput);
+	
 	return cput;
 }
 
@@ -121,10 +143,10 @@ void getCpuLoadForEachProcess(){
 				// using two null-terminator characters.
 				for (pTemp = pwsCounterListBuffer; *pTemp != 0; pTemp += wcslen(pTemp) + 1)
 				{
-					wprintf(L"%s\n", pTemp);
+					//wprintf(L"%s\n", pTemp);
 				}
 
-				wprintf(L"\nInstances of the Process object:\n\n");
+				//wprintf(L"\nInstances of the Process object:\n\n");
 
 				// Walk the instance list. The list can contain one
 				// or more null-terminated strings. The list is terminated
@@ -132,9 +154,10 @@ void getCpuLoadForEachProcess(){
 				for (pTemp = pwsInstanceListBuffer; *pTemp != 0; pTemp += wcslen(pTemp) + 1)
 				{
 					
-					wprintf(L"%s\n", pTemp);
+					//wprintf(L"%s\n", pTemp);
 				
-					getcpuload(pTemp);
+					int ccccppuu=getcpuload(pTemp);
+					printf("CPU: %d", ccccppuu);
 				}
 			}
 			else
@@ -164,10 +187,25 @@ void getCpuLoadForEachProcess(){
 
 void main(void)
 {
-	//for (;;){
-		//getcpuload();
-		getCpuLoadForEachProcess();
-	//	Sleep(1000);
-	//}
+	char text[] = "firefox";
+	wchar_t wtext[20];
+	mbstowcs(wtext, text, strlen(text) + 1);//Plus null
+	LPWSTR ptr = wtext;
+
+	char text2[] = "iexplorer";
+	wchar_t wtext2[20];
+	mbstowcs(wtext2, text2, strlen(text2) + 1);//Plus null
+	LPWSTR ptr2 = wtext2;
+	for (;;){
+		//getcpuload(L"firefox");
+		//getcpuload(L"iexplore");
+		
+		
+		
+		getcpuload(ptr);
+		getcpuload(ptr2);
+		//getCpuLoadForEachProcess();
+		Sleep(1000);
+	}
 }
 
