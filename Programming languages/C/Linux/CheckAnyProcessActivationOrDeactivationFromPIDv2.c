@@ -17,51 +17,84 @@
 /*Structures for dynamic memory*/
 /*process node*/
 struct process_node {
-	int processPID;
+	int *processPID;
+	char *processName;
 	struct process_node *next;
-}*head;
+}*head, *headTemp;
 
 /*Structures for dynamic memory*/
 /*process node*/
-struct process_node2 {
-	int processPID;
-	struct process_node2 *next;
-}*headTemp;
+/*struct process_node {
+	int *processPID;
+	char *processName;
+	struct process_node *next;
+}*headTemp;*/
 
 struct process_node *n;
-struct process_node2 *n2;
+struct process_node *n2;
+
+
 
 /* insert at the end */
-void append(int num) {
+void append(int num, char *pName) {
 	struct process_node *temp, *right;
+	//struct process_node *right;
+	/* Allocate memory for the node */
 	temp = (struct process_node *) malloc(sizeof(struct process_node));
+	/* Assign the specific information in fields */
+	temp->processPID=malloc(sizeof(num));
 	temp->processPID = num;
+
+	temp->processName=malloc(sizeof(pName)+1);
+	strcpy(temp->processName, pName);
+
 	right = (struct process_node *) head;
 	while (right->next != NULL )
 		right = right->next;
 	right->next = temp;
 	right = temp;
 	right->next = NULL;
+
+	/* Free memory */
+	free(temp->processPID);
+	free(temp->processPID);
+	free(temp);
 }
 
 /* insert at the end temp list*/
-void appendtempList(int num) {
-	struct process_node2 *temp, *right;
-	temp = (struct process_node2 *) malloc(sizeof(struct process_node2));
+void appendtempList(int num, char *pName) {
+	struct process_node *temp, *right;
+	/* Allocate memory for the node*/
+	temp = (struct process_node *) malloc(sizeof(struct process_node));
+
+	/* Assign the specific information in fields */
+	temp->processPID=malloc(sizeof(num));
 	temp->processPID = num;
-	right = (struct process_node2 *) headTemp;
+	temp->processName=malloc(sizeof(pName)+1);
+	strcpy(temp->processName, pName);
+
+	right = (struct process_node *) headTemp;
 	while (right->next != NULL )
 		right = right->next;
 	right->next = temp;
 	right = temp;
 	right->next = NULL;
+
+
 }
 
 /* add number inside of the node*/
-void add(int num) {
+void add(int num, char *pName) {
 	struct process_node *temp;
+	/* Allocate memory for the node */
 	temp = (struct process_node *) malloc(sizeof(struct process_node));
+
+	/* Assign the specific information in fields */
+	temp->processPID=malloc(sizeof(num));
 	temp->processPID = num;
+	temp->processName=malloc(sizeof(pName)+1);
+	strcpy(temp->processName, pName);
+
 	if (head == NULL ) {
 		head = temp;
 		head->next = NULL;
@@ -69,13 +102,22 @@ void add(int num) {
 		temp->next = head;
 		head = temp;
 	}
+
+
 }
 
 /* add number inside of the node temp list */
-void addTempList(int num) {
-	struct process_node2 *temp;
-	temp = (struct process_node2 *) malloc(sizeof(struct process_node2));
+void addTempList(int num, char *pName) {
+	struct process_node *temp;
+	/* Allocate memory for the node */
+	temp = (struct process_node *) malloc(sizeof(struct process_node));
+
+	/* Assign the specific information in fields */
+	temp->processPID=malloc(sizeof(num));
 	temp->processPID = num;
+	temp->processName=malloc(sizeof(pName)+1);
+	strcpy(temp->processName, pName);
+
 	if (headTemp == NULL ) {
 		headTemp = temp;
 		headTemp->next = NULL;
@@ -83,10 +125,13 @@ void addTempList(int num) {
 		temp->next = headTemp;
 		headTemp = temp;
 	}
+
+
+
 }
 
 /* add number in a specific locatin */
-void addafter(int num, int loc) {
+void addafter(int num, int loc, char *pName) {
 	int i;
 	struct process_node *temp, *left, *right;
 	right = head;
@@ -94,38 +139,55 @@ void addafter(int num, int loc) {
 		left = right;
 		right = right->next;
 	}
+	/* Allocate memory for the node */
 	temp = (struct process_node *) malloc(sizeof(struct process_node));
+
+	/* Assign the specific information in fields */
+	temp->processPID=malloc(sizeof(num));
 	temp->processPID = num;
+	temp->processName=malloc(sizeof(pName)+1);
+	strcpy(temp->processName, pName);
+
 	left->next = temp;
 	left = temp;
 	left->next = right;
 	return;
+
+
 }
 
 /* add number in a specific locatin temp list*/
-void addafterTempList(int num, int loc) {
+void addafterTempList(int num, int loc, char *pName) {
 	int i;
-	struct process_node2 *temp, *left, *right;
+	struct process_node *temp, *left, *right;
 	right = headTemp;
 	for (i = 1; i < loc; i++) {
 		left = right;
 		right = right->next;
 	}
-	temp = (struct process_node2 *) malloc(sizeof(struct process_node2));
+	/* Allocate memory for the node */
+	temp = (struct process_node *) malloc(sizeof(struct process_node));
+	/* Assign the specific information in fields */
+	temp->processPID=malloc(sizeof(num));
 	temp->processPID = num;
+	temp->processName=malloc(sizeof(pName)+1);
+	strcpy(temp->processName, pName);
+
 	left->next = temp;
 	left = temp;
 	left->next = right;
 	return;
+
+
 }
 
 /* insert a node in the list */
-void insert(int num) {
+void insert(int num, char *pName) {
 	int c = 0;
 	struct process_node *temp;
 	temp = head;
 	if (temp == NULL ) {
-		add(num);
+		add(num, pName);
 	} else {
 		while (temp != NULL ) {
 			if (temp->processPID < num)
@@ -133,20 +195,24 @@ void insert(int num) {
 			temp = temp->next;
 		}
 		if (c == 0)
-			add(num);
+			add(num, pName);
 		else if (c < count())
-			addafter(num, ++c);
-		else
-			append(num);
+			addafter(num, ++c, pName);
+		else{
+			append(num, pName);
+
+		}
 	}
+
 }
+
 /* insert a node in the temp list */
-void insertIntoTempList(int num) {
+void insertIntoTempList(int num, char *pName) {
 	int c = 0;
-	struct process_node2 *temp;
+	struct process_node *temp;
 	temp = headTemp;
 	if (temp == NULL ) {
-		addTempList(num);
+		addTempList(num, pName);
 	} else {
 		while (temp != NULL ) {
 			if (temp->processPID < num)
@@ -154,11 +220,11 @@ void insertIntoTempList(int num) {
 			temp = temp->next;
 		}
 		if (c == 0)
-			addTempList(num);
+			addTempList(num, pName);
 		else if (c < countTemp())
-			addafterTempList(num, ++c);
+			addafterTempList(num, ++c, pName);
 		else
-			appendtempList(num);
+			appendtempList(num, pName);
 	}
 }
 
@@ -170,11 +236,11 @@ int delete(int num) {
 		if (temp->processPID == num) {
 			if (temp == head) {
 				head = temp->next;
-				free(temp);
+				//free(temp);
 				return 1;
 			} else {
 				prev->next = temp->next;
-				free(temp);
+				//free(temp);
 				return 1;
 			}
 		} else {
@@ -192,20 +258,20 @@ void display(struct process_node *r) {
 		return;
 	}
 	while (r != NULL ) {
-		printf("%d ", r->processPID);
+		printf("%d %s\n", r->processPID, r->processName);
 		r = r->next;
 	}
 	printf("\n");
 }
 
 /* Display the content of temp list */
-void displayTemp(struct process_node2 *r) {
+void displayTemp(struct process_node *r) {
 	r = headTemp;
 	if (r == NULL ) {
 		return;
 	}
 	while (r != NULL ) {
-		printf("%d ", r->processPID);
+		printf("%d %s\n", r->processPID, r->processName);
 		r = r->next;
 	}
 	printf("\n");
@@ -225,7 +291,7 @@ int count() {
 
 /* Count element of the list temp list*/
 int countTemp() {
-	struct process_node2 *n;
+	struct process_node *n;
 	int c = 0;
 	n = headTemp;
 	while (n != NULL ) {
@@ -239,34 +305,42 @@ int countTemp() {
 void makeListEveryProcessRunningTakingPID() {
 
 	char line[MAXLENGHTLINE];
-
 	FILE *fp;
-	/*fp =
-			popen(
-					"ps aux | awk '{printf $2 \" \\n \"}'| grep -v 'ps aux' | grep -v awk | tail -n +2",
-					"r");*/
-	fp =
-				popen(
-						"ps aux | awk '{printf $2 \" \\n \"}'| tail -n +2",
-						"r");
 	//fp = popen("ps aux | awk '{printf $2 \" \\n \"}'  | grep -v 'ps' | grep -v awk | grep -v grep | tail -n +2 | grep -v tail", "r");
-
+	fp = popen("ps aux | awk '{printf $11 \" \" $2 \"\\n\"}' | tail -n +2 ",
+			"r");
 	/* Error open file */
 	if (fp == NULL ) {
 		printf("Failed to run command\n");
 		fflush(stdout);
 	}
 
+	char *token1;
 	/* Read the output a line at a time -output it. */
 	while (fgets(line, sizeof line, fp) != NULL ) {
-		insert(atoi(line));
+		int tempPid;
+		char *tempPName;
+		/* Get process name */
+		token1 = strtok(line, " ");
+		strcpy(tempPName, token1);
+
+		/* Get PID */
+		if (token1 != NULL ) {
+			// Increasing pointer to the next token
+			token1 = strtok(NULL, " ");
+			// Assign PID to the temp variable
+			tempPid = atoi(token1);
+		}
+		/* Insert into the list */
+		insert(tempPid, tempPName);
+
 	}
 
 	//Display information inside of list
 	if (head == NULL ) {
 		printf("List is Empty\n");
 	} else {
-		//display(n);
+		display(n);
 
 	}
 }
@@ -277,34 +351,40 @@ void makeListTempEveryProcessRunningTakingPID() {
 	char line[MAXLENGHTLINE];
 
 	FILE *fp;
-	/*fp =
-			popen(
-					"ps aux | awk '{printf $2 \" \\n \"}'  | grep -v 'ps aux' | grep -v awk | tail -n +2",
-					"r");*/
-	fp =
-				popen(
-						"ps aux | awk '{printf $2 \" \\n \"}' | tail -n +2",
-						"r");
 	//fp = popen("ps aux | awk '{printf $2 \" \\n \"}'  | grep -v 'ps' | grep -v awk | grep -v grep | tail -n +2 | grep -v tail", "r");
-
-	//system("ps aux | grep CheckAny");
+	fp = popen("ps aux | awk '{printf $11 \" \" $2 \"\\n\"}' | tail -n +2 ",
+			"r");
 	/* Error open file */
 	if (fp == NULL ) {
 		printf("Failed to run command\n");
 		fflush(stdout);
 	}
 
+	char *token1;
 	/* Read the output a line at a time -output it. */
 	while (fgets(line, sizeof line, fp) != NULL ) {
+		int tempPid;
+		char *tempPName;
+		/* Get process name */
+		token1 = strtok(line, " ");
+		strcpy(tempPName, token1);
 
-		insertIntoTempList(atoi(line));
+		/* Get PID */
+		if (token1 != NULL ) {
+			// Increasing pointer to the next token
+			token1 = strtok(NULL, " ");
+			// Assign PID to the temp variable
+			tempPid = atoi(token1);
+		}
+		/* Insert into the list */
+		insertIntoTempList(tempPid, tempPName);
 	}
 
 	//Display information inside of list
 	if (headTemp == NULL ) {
 		printf("List is Empty\n");
 	} else {
-		//displayTemp(n);
+		//displayTemp(n2);
 	}
 }
 
@@ -353,7 +433,7 @@ void PrintProcessName(int PIDprocess) {
 /* Check if there is a new process */
 void checkNewProcesses() {
 	int found = -1;
-	struct process_node2 *r;
+	struct process_node *r;
 	struct process_node *m;
 
 	r = headTemp;
@@ -374,25 +454,14 @@ void checkNewProcesses() {
 		m = head;
 		/* if found==-1 outsite loop means there is new process */
 		if (found == -1) {
-
 			if (checkIfTheProcessExistsInList(r->processPID) == 0) {
-				printf("New process activated pid: %d\n", r->processPID);
-				//PrintProcessName(r->processPID);
 
-				/* Print name */
-				FILE *fp;
-					char sysCallStr[200];
-					char line[200];
+				/* Print process name */
+				printf("New process activated pid: %d name: %s\n",
+						r->processPID, r->processName);
 
-					sprintf(sysCallStr, "ps -p %d -o command | tail -n +2", r->processPID);
-					fp = popen(sysCallStr, "r");
-					while (fgets(line, sizeof line, fp) != NULL ) {
-						printf("Process name: %s", line);
-					}
-					pclose(fp);
-
-
-				insert(r->processPID);
+				/* Insert new process in the list */
+				insert(r->processPID, r->processName);
 			}
 		}
 		r = r->next;
@@ -405,13 +474,9 @@ void checkNewProcesses() {
 /* Check if there is a termination processes */
 void checkTerminationProcesses() {
 	int found = -1;
+	int pidToDelete = 0;
 	struct process_node *r;
-	struct process_node2 *m;
-	char processName[200];
-
-	FILE *fp;
-	char sysCallStr[200];
-	char line[200];
+	struct process_node *m;
 
 	r = head; //mainlist
 	m = headTemp; //temp list
@@ -422,21 +487,6 @@ void checkTerminationProcesses() {
 	}
 	/* Check if in the main list there is a termination process */
 	while (r != NULL ) {
-
-		// Get process name from syscall (taking at the beginning the name due to we could lose the name)
-				if (r->processPID != 0) {
-					sprintf(sysCallStr, "ps -p %d -o command | tail -n +2",
-							r->processPID);
-					fp = popen(sysCallStr, "r");
-					if (fp == NULL ) {
-						printf("Failed to run command\n");
-					}
-					while (fgets(line, sizeof line, fp) != NULL ) {
-						strcpy(processName, line);
-					}
-					pclose(fp);
-				}
-
 		while (m != NULL ) {
 			if (r->processPID == m->processPID) {
 				//printf("Comparing %d with %d\n", r->processPID, m->processPID);
@@ -445,12 +495,13 @@ void checkTerminationProcesses() {
 			m = m->next;
 		}
 		m = headTemp;
-		/* if found==-1 outsite loop means there is new process */
+		/* if found==-1 outsite loop means there is termination process */
 		if (found == -1) {
-			printf("Termination process pid: %d ", r->processPID);
-			printf("Process name: %s\n", processName);
-			//strcpy(processName, "");
-			delete(r->processPID);
+			printf("Termination process pid: %d name: %s\n", r->processPID,
+					r->processName);
+			/* Delete process name from the main list */
+			pidToDelete = r->processPID;
+			delete(pidToDelete);
 		}
 		r = r->next;
 		found = -1;
@@ -459,7 +510,7 @@ void checkTerminationProcesses() {
 
 /* Free the memory of the temp list */
 void freeList() {
-	struct process_node2 * tmp;
+	struct process_node * tmp;
 	while (headTemp != NULL ) {
 		tmp = headTemp;
 		headTemp = headTemp->next;
@@ -472,13 +523,10 @@ void checkAnyActivationOrTerminationProcess() {
 	makeListTempEveryProcessRunningTakingPID();
 	checkNewProcesses();
 	checkTerminationProcesses();
-	printf("Main List\n");
-	display(n);
-	printf("Temp list\n");
-	displayTemp(n2);
-
-	freeList();
-
+	printf("leelelle");
+	//freeList();
+	/* Print main list */
+	//display(n);
 }
 
 int main(void) {
@@ -494,10 +542,10 @@ int main(void) {
 	/*Make the main list of processes */
 	makeListEveryProcessRunningTakingPID();
 
-	for (;;) {
-		checkAnyActivationOrTerminationProcess();
-		sleep(3);
-	}
+	//for (;;) {
+	//checkAnyActivationOrTerminationProcess();
+	//sleep(3);
+	//}
 
 	return EXIT_SUCCESS;
 
