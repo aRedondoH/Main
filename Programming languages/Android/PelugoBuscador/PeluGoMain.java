@@ -3,8 +3,7 @@ package com.box.pelugobuscador;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
-
-
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,12 +16,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-
-
-
 public class PeluGoMain extends Activity {
-	
 
+	public static Context context;
+	static PeluGoMain ma;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,35 +43,37 @@ public class PeluGoMain extends Activity {
 			@SuppressLint("SetJavaScriptEnabled")
 			@Override
 			public void onFinish() {
-			
 				WebView webView;
 				setContentView(R.layout.actividad_principal);
-				webView = (WebView)findViewById(R.id.webview);
+				webView = (WebView) findViewById(R.id.webview);
 				webView.getSettings().setJavaScriptEnabled(true);
 				webView.loadUrl("http://batchgeo.com/map/8083b5087fe5cd6b78f485e7b834e34e");
-		        
-		        
 			}
 		}.start();
 	}
-	
+
 	@SuppressLint("SetJavaScriptEnabled")
 	public void openMap() {
 		WebView webView;
 		setContentView(R.layout.actividad_principal);
-		webView = (WebView)findViewById(R.id.webview);
+		webView = (WebView) findViewById(R.id.webview);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.loadUrl("http://batchgeo.com/map/8083b5087fe5cd6b78f485e7b834e34e");
-		
-		 
-
 	}
 
 	public void openSignUp() {
-		//PeluGoMain.this.setContentView(R.layout.actividad_principal);
-		WebView myWebView = (WebView) findViewById(R.id.webview);
-		myWebView.loadUrl("http://www.pelugo.es/index.php/8-administration/4-registrate-gratis");
-
+		// Switching to Register screen
+		Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+		startActivity(i);
+	}
+	
+	@SuppressLint("SetJavaScriptEnabled")
+	public void openForum() {
+		WebView webView;
+		setContentView(R.layout.actividad_principal);
+		webView = (WebView) findViewById(R.id.webview);
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.loadUrl("http://www.pelugo.es/index.php/foro");
 	}
 
 	@Override
@@ -86,6 +85,9 @@ public class PeluGoMain extends Activity {
 			return true;
 		case R.id.action_compose:
 			openSignUp();
+			return true;
+		case R.id.action_forum:
+			openForum();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
