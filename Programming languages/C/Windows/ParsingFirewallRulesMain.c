@@ -283,6 +283,7 @@ void makeListWithFirewallRules(){
 				if (token1 != NULL){
 					/* Increase pointer to avoid Name*/
 					token1 = strtok(NULL, " ");
+					token1 = strtok(NULL, " ");
 				}
 				while (token1 != NULL){
 					token1 = removeNewLine(token1);
@@ -297,13 +298,14 @@ void makeListWithFirewallRules(){
 			if (strcmp("Enabled:", token1) == 0){
 				/*Increase pointer to get value */
 				token1 = strtok(NULL, " ");
-				if (strcmp("Yes", token1)){
+				token1 = removeNewLine(token1);
+				if (strcmp("Yes", token1)==0){
 					enabledTemp = 1;
 				}
-				if (strcmp("No", token1)){
+				if (strcmp("No", token1)==0){
 					enabledTemp = 0;
 				}
-				//printf("Enabled: %\n", enabledTemp);
+				
 			}
 		}
 		/* Get the rule direction*/
@@ -311,6 +313,7 @@ void makeListWithFirewallRules(){
 			if (strcmp("Direction:", token1) == 0){
 				/* Increase pointer to get value */
 				token1 = strtok(NULL, " ");
+				token1 = removeNewLine(token1);
 				if (strcmp("In", token1) == 0){
 					directionTemp = 1;
 				}
