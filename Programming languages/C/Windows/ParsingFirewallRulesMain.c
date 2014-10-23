@@ -18,7 +18,7 @@ struct node_rule{
 	char remoteIP[MAXLENGHTLINE];
 	char protocol[MAXLENGHTLINE];
 	char localPort[MAXLENGHTLINE];
-	int remotePort[MAXLENGHTLINE];
+	char remotePort[MAXLENGHTLINE];
 	int action; // action==1 means allow and action==0 means reject
 	struct node_rule *next;
 }*rules;
@@ -188,16 +188,43 @@ void insertRule(
 	/* Asign the rules list to temp */
 	temp = rules;
 	if (temp == NULL) {
-		add(ruleNameTemp, enabledTemp, directionTemp, publicPTemp, privatePTemp, publicPTemp, domainPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp);
+		add(ruleNameTemp, enabledTemp, directionTemp, privatePTemp, domainPTemp,publicPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp,actionTemp);
 	}
 	else {
 		c = count();
 		if (c == 0)
-			add(ruleNameTemp, enabledTemp, directionTemp, publicPTemp, privatePTemp, publicPTemp, domainPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp); // insert at the beginning
+			add(ruleNameTemp, enabledTemp, directionTemp, privatePTemp, domainPTemp, publicPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp, actionTemp); // insert at the beginning
 		else if (c < count())
-			addafter(++c, ruleNameTemp, enabledTemp, directionTemp, publicPTemp, privatePTemp, publicPTemp, domainPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp); // insert after a number
+			addafter(++c, ruleNameTemp, enabledTemp, directionTemp, privatePTemp, domainPTemp, publicPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp, actionTemp); // insert after a number
 		else {
-			append(ruleNameTemp, enabledTemp, directionTemp, publicPTemp, privatePTemp, publicPTemp, domainPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp); // insert at the end
+			append(ruleNameTemp, enabledTemp, directionTemp, privatePTemp, domainPTemp, publicPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp, actionTemp); // insert at the end
+		}
+	}
+}
+
+/* Display list of rules */
+void displayListOfRules(){
+	struct node_rule *r;
+	r = rules;
+	if (r == NULL){
+		printf("The list of rules is empty\n");
+	}
+	else{
+		printf("List of Rules\n");		
+		while (r != NULL){
+			printf("------------------------------\n");
+			printf("Rule name: %s\n", r->ruleName);
+			printf("Enabled: %d\n", r->enabled);
+			printf("Direction: %d\n", r->direction);
+			printf("Domain profile: %d\n", r->domainP);
+			printf("Private profile: %d\n", r->privateP);
+			printf("Public profile: %d\n", r->publicP);
+			printf("Local IP: %s\n", r->localIp);
+			printf("Remote IP: %s\n", r->remoteIP);
+			printf("Local port: %s\n", r->localPort);
+			printf("Remote port: %s\n", r->remotePort);
+			printf("Action: %d\n", r->action);
+			r=r->next;			
 		}
 	}
 }
@@ -227,8 +254,8 @@ void makeListWithFirewallRules(){
 	FILE *fp;
 	/* Temp variables */
 	char ruleNameTemp[MAXLENGHTLINE];
-	int enabledTemp;
-	int directionTemp;
+	int enabledTemp=0;
+	int directionTemp=0;
 	int publicPTemp = 0;
 	int privatePTemp = 0;
 	int domainPTemp = 0;
@@ -246,7 +273,6 @@ void makeListWithFirewallRules(){
 		printf("Failed to run command\n");
 	}
 	char *token1;
-	char *token2;
 	/* Read output a line at a time -output it */
 	while (fgets(line, sizeof line, fp) != NULL){
 		token1 = strtok(line, " ");
@@ -259,10 +285,11 @@ void makeListWithFirewallRules(){
 					token1 = strtok(NULL, " ");
 				}
 				while (token1 != NULL){
+					token1 = removeNewLine(token1);
 					strcat(ruleNameTemp, token1);
 					token1 = strtok(NULL, " ");
 				}
-				printf("Rule: %s\n", ruleNameTemp);
+				//printf("Rule: %s\n", ruleNameTemp);
 			}
 		}
 		/* Store if the rule is enabled or not */
@@ -276,7 +303,7 @@ void makeListWithFirewallRules(){
 				if (strcmp("No", token1)){
 					enabledTemp = 0;
 				}
-				printf("Enabled: %s\n", token1);
+				//printf("Enabled: %\n", enabledTemp);
 			}
 		}
 		/* Get the rule direction*/
@@ -290,7 +317,7 @@ void makeListWithFirewallRules(){
 				if (strcmp("Out", token1) == 0){
 					directionTemp = 0;
 				}
-				printf("Direction: %s\n", token1);
+				//printf("Direction: %d\n", directionTemp);
 			}
 		}
 		/* Get profiles configuration */
@@ -319,7 +346,7 @@ void makeListWithFirewallRules(){
 						token1 = removeNewLine(token1);
 					}
 				}
-				printf("Profiles: %d %d %d\n", domainPTemp, privatePTemp, publicPTemp);
+				//printf("Profiles: %d %d %d\n", domainPTemp, privatePTemp, publicPTemp);
 			}
 		}
 		/* Get localIP */
@@ -327,8 +354,9 @@ void makeListWithFirewallRules(){
 			if (strcmp("LocalIP:", token1) == 0){
 				/*Increase the pointer to get value of localIP */
 				token1 = strtok(NULL, " ");
+				token1 = removeNewLine(token1);
 				strcpy(localIpTemp, token1);
-				printf("Local IP: %s\n", localIpTemp);
+				//printf("Local IP: %s\n", localIpTemp);
 			}
 		}
 		/* Get remoteIp */
@@ -336,8 +364,9 @@ void makeListWithFirewallRules(){
 			if (strcmp("RemoteIP:", token1) == 0){
 				/*Increase the pointer to get value of remoteIP */
 				token1 = strtok(NULL, " ");
+				token1 = removeNewLine(token1);
 				strcpy(remoteIPTemp, token1);
-				printf("Remote IP: %s\n", remoteIPTemp);
+				//printf("Remote IP: %s\n", remoteIPTemp);
 			}
 		}
 		/* Get protocol */
@@ -345,8 +374,9 @@ void makeListWithFirewallRules(){
 			if (strcmp("Protocol:", token1) == 0){
 				/*Increase the pointer to get value of protocol */
 				token1 = strtok(NULL, " ");
+				token1 = removeNewLine(token1);
 				strcpy(protocolTemp, token1);
-				printf("Protocol: %s\n", protocolTemp);
+				//printf("Protocol: %s\n", protocolTemp);
 			}
 		}
 		/* Get localPort */
@@ -354,17 +384,19 @@ void makeListWithFirewallRules(){
 			if (strcmp("LocalPort:", token1) == 0){
 				/*Increase the pointer to get value of local port */
 				token1 = strtok(NULL, " ");
+				token1 = removeNewLine(token1);
 				strcpy(localPortTemp, token1);
-				printf("LocalPort: %s\n", localPortTemp);
+				//printf("LocalPort: %s\n", localPortTemp);
 			}
 		}
 		/* Get remotePort */
 		if (token1 != NULL){
-			if (strcmp("Remote port:", token1) == 0){
+			if (strcmp("RemotePort:", token1) == 0){
 				/*Increase the pointer to get value of remote port */
 				token1 = strtok(NULL, " ");
+				token1 = removeNewLine(token1);
 				strcpy(remotePortTemp, token1);
-				printf("RemotePort: %s\n", remotePortTemp);
+				//printf("RemotePort: %s\n", remotePortTemp);
 			}
 		}
 		/* Get action */
@@ -382,8 +414,9 @@ void makeListWithFirewallRules(){
 						actionTemp = 0;
 					}
 				}
-				printf("Action: %d\n\n", actionTemp);
+				//printf("Action: %d\n\n", actionTemp);
 				/* Insert rule in the list */
+				//printf("%s %d %d %d %d %d %s %s %s %s %s %d\n", ruleNameTemp, enabledTemp, directionTemp, publicPTemp, privatePTemp, domainPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp, actionTemp);
 				insertRule(ruleNameTemp, enabledTemp, directionTemp, publicPTemp, privatePTemp, domainPTemp, localIpTemp, remoteIPTemp, protocolTemp, localPortTemp, remotePortTemp, actionTemp);
 			}
 		}
@@ -392,8 +425,11 @@ void makeListWithFirewallRules(){
 }
 
 
+
+
 main()
 {
 	printf("We going to parsing firewall rules \n");
 	makeListWithFirewallRules();
+	displayListOfRules();
 }
