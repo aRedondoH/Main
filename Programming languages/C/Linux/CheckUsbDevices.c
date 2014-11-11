@@ -19,10 +19,10 @@
 
 /* Record to save the devices */
 struct node_usb {
-	char deviceClass[MAXLENGHTLINE];
-	char deviceSubClass[MAXLENGHTLINE];
-	char vendorID[MAXLENGHTLINE];
-	char productID[MAXLENGHTLINE];
+	uint8_t deviceClass;
+	uint8_t deviceSubClass;
+	uint16_t vendorID;
+	uint16_t productID;
 	struct node_usb *next;
 }*usbs, *usbs_temp;
 
@@ -32,12 +32,31 @@ libusb_context *ctx = NULL; //a libusb session
 int r; //for return values
 ssize_t cnt; //holding number of devices in list
 
+/* Usb initial checking */
+int usbInitialChecking() {
+
+	/* Initialize a library session */
+	r = libusb_init(&ctx);
+	/* check if the initialization was good */
+	if (r < 0) {
+		printf("Init Error\n");
+		return 1;
+	}
+	/* set verbosity level to 3, as suggested in the documentation */
+	libusb_set_debug(ctx, 3);
+	/*get the list of devices */
+	cnt = libusb_get_device_list(ctx, &devs);
+	if (cnt < 0) {
+		printf("Get Device error\n");
+	}
+
+	return 0;
+}
+
 /* List Operations */
 /* Append */
-void append(char deviceClassToInsert[MAXLENGHTLINE],
-		char deviceSubClassToInsert[MAXLENGHTLINE],
-		char vendorIDToInsert[MAXLENGHTLINE],
-		char productIDToInsert[MAXLENGHTLINE], int flagInsert) {
+void append(uint8_t deviceClassToInsert, uint8_t deviceSubClassToInsert,
+		uint16_t vendorIDToInsert, uint16_t productIDToInsert, int flagInsert) {
 
 	/* Allocate memory for the node */
 	struct node_usb *right, *temp;
@@ -46,13 +65,13 @@ void append(char deviceClassToInsert[MAXLENGHTLINE],
 
 	/* Assign the specific information in fields */
 	/* Assign device class*/
-	strcpy(temp->deviceClass, deviceClassToInsert);
+	temp->deviceClass = deviceClassToInsert;
 	/* Assign device subclass */
-	strcpy(temp->deviceSubClass, deviceSubClassToInsert);
+	temp->deviceSubClass = deviceSubClassToInsert;
 	/* Assign vendor ID */
-	strcpy(temp->vendorID, vendorIDToInsert);
+	temp->vendorID = vendorIDToInsert;
 	/* Assign product ID*/
-	strcpy(temp->productID, productIDToInsert);
+	temp->productID = productIDToInsert;
 
 	/* Append to main devices list */
 	if (flagInsert == 1) {
@@ -70,10 +89,8 @@ void append(char deviceClassToInsert[MAXLENGHTLINE],
 }
 
 /* Add */
-void add(char deviceClassToInsert[MAXLENGHTLINE],
-		char deviceSubClassToInsert[MAXLENGHTLINE],
-		char vendorIDToInsert[MAXLENGHTLINE],
-		char productIDToInsert[MAXLENGHTLINE], int flagInsert) {
+void add(uint8_t deviceClassToInsert, uint8_t deviceSubClassToInsert,
+		uint16_t vendorIDToInsert, uint16_t productIDToInsert, int flagInsert) {
 
 	/* Create a node to fill it with the temporal information */
 	struct node_usb *temp;
@@ -82,13 +99,13 @@ void add(char deviceClassToInsert[MAXLENGHTLINE],
 
 	/* Assign the specific information in fields */
 	/* Assign device class*/
-	strcpy(temp->deviceClass, deviceClassToInsert);
+	temp->deviceClass = deviceClassToInsert;
 	/* Assign device subclass */
-	strcpy(temp->deviceSubClass, deviceSubClassToInsert);
+	temp->deviceSubClass = deviceSubClassToInsert;
 	/* Assign vendor ID */
-	strcpy(temp->vendorID, vendorIDToInsert);
+	temp->vendorID = vendorIDToInsert;
 	/* Assign product ID*/
-	strcpy(temp->productID, productIDToInsert);
+	temp->productID = productIDToInsert;
 
 	/* Add usb device to the main list */
 	if (flagInsert == 1) {
@@ -113,20 +130,19 @@ void add(char deviceClassToInsert[MAXLENGHTLINE],
 	}
 }
 /* Add in a specific location */
-void addafter(int loc, char deviceClassToInsert[MAXLENGHTLINE],
-		char deviceSubClassToInsert[MAXLENGHTLINE],
-		char vendorIDToInsert[MAXLENGHTLINE],
-		char productIDToInsert[MAXLENGHTLINE], int insertFlag) {
+void addafter(int loc, uint8_t deviceClassToInsert,
+		uint8_t deviceSubClassToInsert, uint16_t vendorIDToInsert,
+		uint16_t productIDToInsert, int flagInsert) {
 	int i;
 	struct node_usb *left, *right, *temp;
 	left = NULL;
 
 	/* Addafter usb device in main list */
-	if (insertFlag == 1) {
+	if (flagInsert == 1) {
 		right = usbs;
 	}
 	/* Addafter usb device in temp list */
-	if (insertFlag == 2) {
+	if (flagInsert == 2) {
 		right = usbs_temp;
 	}
 	for (i = 1; i < loc; i++) {
@@ -139,13 +155,13 @@ void addafter(int loc, char deviceClassToInsert[MAXLENGHTLINE],
 
 	/* Assign the specific information in fields */
 	/* Assign device class*/
-	strcpy(temp->deviceClass, deviceClassToInsert);
+	temp->deviceClass = deviceClassToInsert;
 	/* Assign device subclass */
-	strcpy(temp->deviceSubClass, deviceSubClassToInsert);
+	temp->deviceSubClass = deviceSubClassToInsert;
 	/* Assign vendor ID */
-	strcpy(temp->vendorID, vendorIDToInsert);
+	temp->vendorID = vendorIDToInsert;
 	/* Assign product ID*/
-	strcpy(temp->productID, productIDToInsert);
+	temp->productID = productIDToInsert;
 
 	/* add device to the list in a specific location */
 	left->next = temp;
@@ -174,10 +190,8 @@ int count(int flagToCount) {
 }
 
 /* Insert usb device */
-void insertUsbDevice(char deviceClassTemp[MAXLENGHTLINE],
-		char deviceSubClassTemp[MAXLENGHTLINE],
-		char vendorIDTemp[MAXLENGHTLINE],
-		char productIDTemp[MAXLENGHTLINE]) {
+void insertUsbDevice(uint8_t deviceClassTemp, uint8_t deviceSubClassTemp,
+		uint16_t vendorIDTemp, uint16_t productIDTemp) {
 
 	int c = 0;
 	struct node_usb *temp;
@@ -186,40 +200,46 @@ void insertUsbDevice(char deviceClassTemp[MAXLENGHTLINE],
 	temp = usbs;
 
 	if (temp == NULL ) {
-		add(deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 1);
+		add(deviceClassTemp, deviceSubClassTemp, vendorIDTemp, productIDTemp,
+				1);
 	} else {
 		c = count(1);
 		if (c == 0)
-			add(deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 1);
+			add(deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+					productIDTemp, 1);
 		else if (c < count(1))
-			addafter(++c, deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 1);
+			addafter(++c, deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+					productIDTemp, 1);
 		else {
-			append(deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 1);
+			append(deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+					productIDTemp, 1);
 		}
 	}
 }
 /* Insert usb device in temp list */
-void insertUsbDeviceTemp(char deviceClassTemp[MAXLENGHTLINE],
-		char deviceSubClassTemp[MAXLENGHTLINE],
-		char vendorIDTemp[MAXLENGHTLINE],
-		char productIDTemp[MAXLENGHTLINE]) {
+void insertUsbDeviceTemp(uint8_t deviceClassTemp, uint8_t deviceSubClassTemp,
+		uint16_t vendorIDTemp, uint16_t productIDTemp) {
 
 	int c = 0;
 	struct node_usb *temp;
 
 	/* Assign the devices list to temp */
-	temp = usbs;
+	temp = usbs_temp;
 
 	if (temp == NULL ) {
-		add(deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 2);
+		add(deviceClassTemp, deviceSubClassTemp, vendorIDTemp, productIDTemp,
+				2);
 	} else {
 		c = count(1);
 		if (c == 0)
-			add(deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 2);
+			add(deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+					productIDTemp, 2);
 		else if (c < count(1))
-			addafter(++c, deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 2);
+			addafter(++c, deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+					productIDTemp, 2);
 		else {
-			append(deviceClassTemp,deviceSubClassTemp,vendorIDTemp,productIDTemp, 2);
+			append(deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+					productIDTemp, 2);
 		}
 	}
 }
@@ -238,11 +258,11 @@ void freeTempList() {
 }
 
 /* Delete a device from the main list */
-int delete(char productIDToDelete[MAXLENGHTLINE]) {
+int delete(uint16_t productIDToDelete) {
 	struct node_usb *temp, *prev;
 	temp = usbs;
 	while (temp != NULL ) {
-		if (strcmp(temp->productID, productIDToDelete) == 0) {
+		if (temp->productID == productIDToDelete) {
 			if (temp == usbs) {
 				usbs = temp->next;
 				free(temp);
@@ -282,22 +302,29 @@ void displayListOfDevices(int flagToShow) {
 		}
 		while (r != NULL ) {
 			printf("-----------------------\n");
-			printf("Usb device class: --%s--", r->deviceClass);
-			printf("Usb device subclass: %s", r->deviceSubClass);
-			printf("Vendor id: %s", r->vendorID);
-			printf("Product id: %s",r->productID);
+			printf("Usb device class: %x\n", r->deviceClass);
+			printf("Usb device subclass: %x\n", r->deviceSubClass);
+			printf("Vendor id: %x\n", r->vendorID);
+			printf("Product id: %x\n", r->productID);
 			/* Pointing to the next device in th list */
 			r = r->next;
 			fflush(stdout);
 		}
 	}
+	printf("\n");
 }
-
 
 /* Make list of usb devices inserted */
 void makeListUsbDevices() {
 	struct libusb_device_descriptor desc;
 	int i;
+	uint8_t deviceClassTemp;
+	uint8_t deviceSubClassTemp;
+	uint16_t vendorIDTemp;
+	uint16_t productIDTemp;
+
+	usbInitialChecking();
+
 	/* Iterating through the list of usb devices*/
 	for (i = 0; i < cnt; i++) {
 		int r = libusb_get_device_descriptor(devs[i], &desc);
@@ -306,24 +333,15 @@ void makeListUsbDevices() {
 			printf("failded to get device descriptor\n");
 			return;
 		}
-		uint8_t deviceClassTemp;
-		uint8_t deviceSubClassTemp;
-		uint16_t vendorIDTemp;
-		uint16_t productIDTemp;
 
-
-
+		/* Assign the specific values to temp variables */
 		deviceClassTemp = desc.bDeviceClass;
 		deviceSubClassTemp = desc.bDeviceSubClass;
-		vendorIDTemp= desc.idVendor;
+		vendorIDTemp = desc.idVendor;
 		productIDTemp = desc.idProduct;
-
-		printf("Device Class: %x\n", deviceClassTemp);
-		printf("Device Sub-class: %x\n", deviceSubClassTemp);
-		printf("VendorID: %x\n", vendorIDTemp);
-		printf("ProductID: %x\n", productIDTemp);
-
-		//insertUsbDevice(deviceClassTemp,deviceClassTemp,vendorIDTemp,productIDTemp);
+		/* Insert usb values into main list */
+		insertUsbDevice(deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+				productIDTemp);
 	}
 }
 
@@ -331,47 +349,164 @@ void makeListUsbDevices() {
 void makeTempListUsbDevices() {
 	struct libusb_device_descriptor desc;
 	int i;
+	uint8_t deviceClassTemp;
+	uint8_t deviceSubClassTemp;
+	uint16_t vendorIDTemp;
+	uint16_t productIDTemp;
+
+	usbInitialChecking();
+
 	/* Iterating through the list of usb devices*/
 	for (i = 0; i < cnt; i++) {
 		int r = libusb_get_device_descriptor(devs[i], &desc);
 
 		if (r < 0) {
-			printf("failded to get device descriptor\n");
+			printf("failed to get device descriptor\n");
 			return;
 		}
-		//printf("Device Class: %d\n", desc.bDeviceClass);
-		//printf("Device Sub-class: %d\n", desc.bDeviceSubClass);
-		//printf("VendorID: %x\n", desc.idVendor);
-		//printf("ProductID: %x\n", desc.idProduct);
-		insertUsbDeviceTemp((char*)desc.bDeviceClass,(char*)desc.bDeviceSubClass,(char*)desc.idVendor,(char*)desc.idProduct);
+		/* Assign the specific values to temp variables */
+		deviceClassTemp = desc.bDeviceClass;
+		deviceSubClassTemp = desc.bDeviceSubClass;
+		vendorIDTemp = desc.idVendor;
+		productIDTemp = desc.idProduct;
+		/* Insert values into temp list */
+		insertUsbDeviceTemp(deviceClassTemp, deviceSubClassTemp, vendorIDTemp,
+				productIDTemp);
 	}
 }
 
+/* Check if the device exists in the list */
+int checkIfTheDeviceExistsInList(uint16_t idProductToCheck) {
+	int found = 0;
+	struct node_usb *runner;
 
-/* Usb initial checking */
-int usbInitialChecking() {
-	/* initialize a library session */
-	r = libusb_init(&ctx);
-	/* check if the initialization was good */
-	if (r < 0) {
-		printf("Init Error\n");
-		return 1;
+	/* Pointer to the first node */
+	runner = usbs;
+	if (runner == NULL ) {
+		printf("something is wrong in checkIfTheProcessExistsInList\n");
+		return -1;
 	}
-	/* set verbosity level to 3, as suggested in the documentation */
-	libusb_set_debug(ctx, 3);
-	/*get the list of devices */
-	cnt = libusb_get_device_list(ctx, &devs);
-	if (cnt < 0) {
-		printf("Get Device error\n");
+	while (runner != NULL ) {
+		if (runner->productID == idProductToCheck) {
+			found = 0;
+		}
+		runner = runner->next;
+	}
+	if (found == 1) {
+		return 1;
+	} else {
+		if (found == 0) {
+			return 0;
+		}
 	}
 	return 0;
 }
 
+/* Check if there are new devices connected */
+void checkNewDevicesConnected() {
+	int found = -1;
+	struct node_usb *r;
+	struct node_usb *m;
+
+	r = usbs_temp;
+	m = usbs;
+	if (r == NULL || m == NULL ) {
+		printf("something is wrong\n");
+		return;
+	}
+	/*check if there are different number of elements in main and temp list*/
+	while (r != NULL ) {
+		while (m != NULL ) {
+			if (r->productID == m->productID) {
+				found = 0;
+			}
+			m = m->next;
+		}
+		m = usbs;
+		/* if found==-1 outsite loop means there is new device */
+		if (found == -1) {
+			if (checkIfTheDeviceExistsInList(r->productID) == 0) {
+				/* Print process name */
+				printf("New device found productID %x\n", r->productID);
+				fflush(stdout);
+				/* Insert new process in the Main list */
+				insertUsbDevice(r->deviceClass, r->deviceSubClass, r->vendorID,
+						r->productID);
+			}
+		}
+		r = r->next;
+		found = -1;
+	}
+}
+
+/* Check if there is a disconnection device */
+void checkDisconnectionDevices() {
+	int found = -1;
+	int deleted = 0;
+	struct node_usb *r;
+	struct node_usb *m;
+
+	/* Point to the main list */
+	r = usbs;
+	/* Point to the temp list */
+	m = usbs_temp; //temp list
+	if (r == NULL || m == NULL ) {
+		printf("One of the two list is empty \n");
+		return;
+	}
+	/* Check if in the main list there is a desconection device */
+	while (r != NULL ) {
+		while (m != NULL ) {
+			if ((r->productID == m->productID) && (found != 0)) {
+				//printf("Comparing %d with %d\n", r->processPID, m->processPID);
+				found = 0;
+			}
+			m = m->next;
+		}
+		m = usbs_temp;
+		/* if found==-1 outsite loop means there is desconection device */
+		if (found == -1) {
+			printf("Disconnection device found productID %x\n", r->productID);
+			fflush(stdout);
+			/* Delete process name from the main list */
+			delete(r->productID);
+			deleted = 1;
+			/* Recheck if there is more termination process */
+			r = usbs;
+
+		}
+		if (deleted != 1) {
+			r = r->next;
+		}
+		deleted = 0;
+		found = -1;
+	}
+}
+
+/* Check if there is any usb device insertion or removal */
+void checkAnyInsertionOrRemoval() {
+	makeTempListUsbDevices();
+	checkNewDevicesConnected();
+	checkDisconnectionDevices();
+
+	freeTempList();
+}
+
 int main() {
+	/* Initialize lists */
+	usbs = NULL;
+	usbs_temp = NULL;
+
 	usbInitialChecking();
 	makeListUsbDevices();
-	libusb_free_device_list(devs, 1); //free the list, unref the devices in it
-	libusb_exit(ctx); //close the session
+	for (;;) {
+		checkAnyInsertionOrRemoval();
+		sleep(1);
+	}
+
+	//libusb_free_device_list(devs, 1); //free the list, unref the devices in it
+	//libusb_exit(ctx); //close the session
+
 	return 0;
 }
 
