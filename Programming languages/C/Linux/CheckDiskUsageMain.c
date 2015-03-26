@@ -14,10 +14,8 @@ void checkDiskUsage() {
 	char line[100];
 	char command[100];
 
-	// Execute a process listing
-
-	//sprintf(command, "df -hT /home | tail -n +2 | awk '{ printf \"%-10s\n\", $6}' | cut -d \" % \" -f 1");
-	sprintf(command, "df -hT /home | tail -n +2");
+	// Command to get percentage disk usage
+	sprintf(command, "df -hT /home | tail -n +2 | awk '{printf \" %%s \",$6}' ");
 
 	fp = popen(command, "r");
 	/* Error run command */
@@ -27,7 +25,6 @@ void checkDiskUsage() {
 		/* Read output from command running*/
 		while (fgets(line, sizeof line, fp) != NULL ) {
 			diskUsage = atoi(line);
-			printf("%s\n", line);
 		}
 	}
 	/* close file */
