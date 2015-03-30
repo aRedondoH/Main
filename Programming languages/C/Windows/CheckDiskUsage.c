@@ -23,6 +23,8 @@ void method1(int argc,char *argv[]){
 	unsigned __int64 i64FreeBytesToCaller,
 		i64TotalBytes,
 		i64FreeBytes;
+	unsigned __int64 i64UsageMBytes;
+	unsigned __int64 i64TotalMBytes;
 
 	/*
 	Command line parsing.
@@ -31,16 +33,16 @@ void method1(int argc,char *argv[]){
 	trailing backslash to the drive letter and colon.  This is
 	required on Windows 95 and 98.
 	*/
-	if (argc != 2)
+	/*if (argc != 2)
 	{
 		printf("usage:  %s <drive|UNC path>\n", argv[0]);
 		printf("\texample:  %s C:\\\n", argv[0]);
 		return;
-	}
+	}*/
 
-	pszDrive = argv[1];
+	/*pszDrive = argv[1];*/
 
-	if (pszDrive[1] == ':')
+	/*if (pszDrive[1] == ':')
 	{
 		szDrive[0] = pszDrive[0];
 		szDrive[1] = ':';
@@ -48,7 +50,7 @@ void method1(int argc,char *argv[]){
 		szDrive[3] = '\0';
 
 		pszDrive = szDrive;
-	}
+	}*/
 
 	/*
 	Use GetDiskFreeSpaceEx if available; otherwise, use
@@ -64,28 +66,37 @@ void method1(int argc,char *argv[]){
 		"GetDiskFreeSpaceExA");
 	if (pGetDiskFreeSpaceEx)
 	{
-		fResult = pGetDiskFreeSpaceEx(pszDrive,
+		fResult = pGetDiskFreeSpaceEx(L"C:",
 			(PULARGE_INTEGER)&i64FreeBytesToCaller,
 			(PULARGE_INTEGER)&i64TotalBytes,
 			(PULARGE_INTEGER)&i64FreeBytes);
 		if (fResult)
 		{
-			printf("\n\nGetDiskFreeSpaceEx reports\n\n");
+			/*printf("\n\nGetDiskFreeSpaceEx reports\n\n");
 			printf("Available space to caller = %I64u MB\n",
-				i64FreeBytesToCaller / (1024 * 1024));
+				i64FreeBytesToCaller / (1000 * 1000));
 			printf("Total space               = %I64u MB\n",
-				i64TotalBytes / (1024 * 1024));
+				i64TotalBytes / (1000 * 1000));
 			printf("Free space on drive       = %I64u MB\n",
-				i64FreeBytes / (1024 * 1024));
+				i64FreeBytes / (1000 * 1000));*/
+
+			i64TotalMBytes = i64TotalBytes / (1000 * 1000);
+
+			i64UsageMBytes = (i64TotalBytes / (1000 * 1000)) - (i64FreeBytes / (1000 * 1000));
+
+			/*printf("Usage space = %I64u MB\n", i64UsageMBytes");*/
+
+			printf("Total percentage disk usage: %I64u%% \n", (i64UsageMBytes * 100) / i64TotalMBytes);
 		}
 	}
 	else
 	{
-		fResult = GetDiskFreeSpace(pszDrive,
+		fResult = GetDiskFreeSpace(L"C:",
 			&dwSectPerClust,
 			&dwBytesPerSect,
 			&dwFreeClusters,
 			&dwTotalClusters);
+	
 		if (fResult)
 		{
 			/* force 64-bit math */
@@ -94,11 +105,20 @@ void method1(int argc,char *argv[]){
 			i64FreeBytes = (__int64)dwFreeClusters * dwSectPerClust *
 				dwBytesPerSect;
 
-			printf("GetDiskFreeSpace reports\n\n");
+			/*printf("GetDiskFreeSpace reports\n\n");
 			printf("Free space  = %I64u MB\n",
-				i64FreeBytes / (1024 * 1024));
+				i64FreeBytes / (1000 * 1000));
 			printf("Total space = %I64u MB\n",
-				i64TotalBytes / (1024 * 1024));
+				i64TotalBytes / (1000 * 1000));*/
+
+			
+			i64TotalMBytes = i64TotalBytes / (1000 * 1000);
+
+			i64UsageMBytes = (i64TotalBytes / (1000 * 1000)) - (i64FreeBytes / (1000 * 1000));
+
+			/*printf("Usage space = %I64u MB\n", i64UsageMBytes");*/
+
+			printf("Total percentage disk usage: %I64u%% \n", (i64UsageMBytes * 100) / i64TotalMBytes);
 		}
 	}
 
@@ -116,15 +136,17 @@ static unsigned __int64 getFreeSpace(const char* dir)
 	div_t divresult;
 
 
-	int i = GetDiskFreeSpaceEx(dir, &freeBytesUser, &bytes, &freeBytesTotal);
+	int i = GetDiskFreeSpaceEx(L"C:", &freeBytesUser, &bytes, &freeBytesTotal);
 	//cout << i << endl;
 	printf("%d\n", i);
+	
+	printf("%llu %llu %llu\n", freeBytesUser, bytes, freeBytesTotal);
 	return freeBytesUser.QuadPart;
 }
 
 void method2(){
 
-	getFreeSpace("C:\\");
+	getFreeSpace(" C:\ ");
 
 }
 
@@ -135,8 +157,8 @@ void method3PercentageDiskUsage(){
 	FILE *fp;
 	char line[100];
 	char command[100];
-	long long int diskFullSpace;
-	int diskFreeSpace;
+	long diskFullSpace;
+	long long diskFreeSpace;
 
 	// Command to get percentage disk usage
 	sprintf(command, "wmic logicaldisk get size,freespace,caption | find \"C:\" ");
@@ -148,16 +170,20 @@ void method3PercentageDiskUsage(){
 	}
 	else {
 		char *token1;
+		char strToConvert[100];
 		/* Read output from command running*/
 		while (fgets(line, sizeof line, fp) != NULL) {
 			token1 = strtok(line, " ");
 			token1 = strtok(NULL, " ");
 			printf("--%s--\n", token1);
-			diskFreeSpace = atoll(token1);
+			//diskFreeSpace = atoll(token1);
+			
+			diskFreeSpace = strtol(strToConvert,NULL, 11);
+			
 
 			//diskUsage = atoi(line);
-			printf("%lld\n", diskFreeSpace);
-
+			printf("%ld\n", diskFreeSpace);
+			printf("Hi\n");
 		}
 	}
 	/* close file */
@@ -167,9 +193,9 @@ void method3PercentageDiskUsage(){
 
 int main(int argc, char *argv[]) {
 
-	//method1(argc, argv);	
+	method1(argc, argv);	
 	//method2();
-	method3PercentageDiskUsage();
+	//method3PercentageDiskUsage();
 
 	return 0;
 
