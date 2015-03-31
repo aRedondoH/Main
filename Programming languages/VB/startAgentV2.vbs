@@ -1,3 +1,4 @@
 Set objShell = WScript.CreateObject("WScript.Shell")
 WScript.Sleep 60*1000
-objShell.Run("C:\SecureNOK\SNOK-agent\bin\SNOKAgentRelease1_2Multithreading.exe"), 0, True
+strCommand = "cmd /c C:\SecureNOK\SNOK-agent\bin\SNOK-Agent-Release1_2Multithreading.exe > AgentLog.txt"
+objShell.Run(strCommand), 0, True
