@@ -40,9 +40,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
@@ -55,6 +58,8 @@ public class RegisterActivity extends Activity {
 	public EditText timetableHS;
 	public EditText emailHS;
 	public EditText phoneHS;
+	public Spinner spinnerTypeOfHairdresser;
+	public EditText facebookHS;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,6 +74,16 @@ public class RegisterActivity extends Activity {
 		emailHS = (EditText) findViewById(R.id.hairdresserEmail);
 		phoneHS = (EditText) findViewById(R.id.hairdresserPhoneNumber);
 
+		spinnerTypeOfHairdresser = (Spinner) findViewById(R.id.typeOfHairdresser_spinner);
+		// Create an ArrayAdapter using the string array and a default spinner layout
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.typeOfHairdresser_array,android.R.layout.simple_spinner_item);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinnerTypeOfHairdresser.setAdapter(adapter);
+
+		facebookHS = (EditText) findViewById(R.id.facebookWebsite);
+
 		signUpHairdresser = (Button) findViewById(R.id.btnRegister);
 		signUpHairdresser.setOnClickListener(new View.OnClickListener() {
 
@@ -78,9 +93,11 @@ public class RegisterActivity extends Activity {
 						addressHS.getText().toString(), cityHS.getText()
 								.toString(), provinceHS.getText().toString(),
 						timetableHS.getText().toString(), emailHS.getText()
-								.toString(), phoneHS.getText().toString());
+								.toString(), phoneHS.getText().toString(),spinnerTypeOfHairdresser.getSelectedItem().toString(),facebookHS.getText().toString());
 			}
 		});
+
+
 
 	}
 
@@ -105,7 +122,6 @@ public class RegisterActivity extends Activity {
 				List<NameValuePair> postValues = new ArrayList<NameValuePair>();
 				postValues.add(new BasicNameValuePair("nameHairdresser",
 						params[0]));
-
 				postValues.add(new BasicNameValuePair("addressHairdresser",
 						params[1]));
 				postValues.add(new BasicNameValuePair("cityHairdresser",
@@ -118,6 +134,8 @@ public class RegisterActivity extends Activity {
 						params[5]));
 				postValues.add(new BasicNameValuePair("phoneHairdresser",
 						params[6]));
+				postValues.add(new BasicNameValuePair("typeOfHairdresser",params[7]));
+				postValues.add(new BasicNameValuePair("facebookPageHairdresser",params[8]));
 
 				// request method is GET
 				DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -175,21 +193,24 @@ public class RegisterActivity extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
 	public void openMap() {
-		WebView webView;
-		setContentView(R.layout.actividad_principal);
-		webView = (WebView) findViewById(R.id.webview);
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl("http://batchgeo.com/map/8083b5087fe5cd6b78f485e7b834e34e");
-
+		Intent intent = new Intent(getApplicationContext(), MapaWebView.class);
+		startActivity(intent);
 	}
 
 	public void openSignUp() {
 		// Switching to Register screen
 		Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
 		startActivity(i);
-
+	}
+	
+	@SuppressLint("SetJavaScriptEnabled")
+	public void openForum() {
+		WebView webView;
+		setContentView(R.layout.actividad_principal);
+		webView = (WebView) findViewById(R.id.webview);
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.loadUrl("http://www.pelugo.es/index.php/foro");
 	}
 
 	@Override

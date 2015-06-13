@@ -1,25 +1,34 @@
 package com.box.pelugobuscador;
 
-import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
+//@SuppressLint("SetJavaScriptEnabled")
 public class PeluGoMain extends Activity {
 
 	public static Context context;
 	static PeluGoMain ma;
+	
+	WebView webView;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -40,25 +49,43 @@ public class PeluGoMain extends Activity {
 			public void onTick(long millisUntilFinished) {
 			}
 
-			@SuppressLint("SetJavaScriptEnabled")
 			@Override
 			public void onFinish() {
-				WebView webView;
+
+				String ua = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
+
 				setContentView(R.layout.actividad_principal);
+
+				/* Google Admob advertising */
+				AdView mAdView = (AdView)findViewById(R.id.adView);
+				AdRequest adRequest = new AdRequest.Builder().build();
+				mAdView.loadAd(adRequest);
+
 				webView = (WebView) findViewById(R.id.webview);
 				webView.getSettings().setJavaScriptEnabled(true);
-				webView.loadUrl("http://batchgeo.com/map/8083b5087fe5cd6b78f485e7b834e34e");
+				webView.getSettings().setUseWideViewPort(true);
+				webView.getSettings().setUserAgentString(ua);
+				webView.getSettings().setLoadsImagesAutomatically(true);
+				webView.getSettings().setBuiltInZoomControls(true);
+				webView.getSettings().setSaveFormData(true);
+				webView.getSettings().setDomStorageEnabled(true);
+				webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+				webView.getSettings().setSupportZoom(true);
+				webView.getSettings().setDisplayZoomControls(false);
+				webView.loadUrl("http://www.easymapmaker.com/map/dc04a04f6274ac349447fbc5803d0765");
 			}
 		}.start();
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
+	protected boolean allowRegisterForTouch(){
+		return false;
+
+	}
+	
+	//@SuppressLint("SetJavaScriptEnabled")
 	public void openMap() {
-		WebView webView;
-		setContentView(R.layout.actividad_principal);
-		webView = (WebView) findViewById(R.id.webview);
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl("http://batchgeo.com/map/8083b5087fe5cd6b78f485e7b834e34e");
+		 Intent intent = new Intent(getApplicationContext(), MapaWebView.class);
+		startActivity(intent);
 	}
 
 	public void openSignUp() {
@@ -67,7 +94,16 @@ public class PeluGoMain extends Activity {
 		startActivity(i);
 	}
 	
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressWarnings("unused")
+	private class MyWebViewClient extends WebViewClient {
+	    @Override
+	    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+	        view.loadUrl(url);
+	        return true;
+	    }
+	}
+	
+	//@SuppressLint("SetJavaScriptEnabled")
 	public void openForum() {
 		WebView webView;
 		setContentView(R.layout.actividad_principal);
@@ -85,9 +121,6 @@ public class PeluGoMain extends Activity {
 			return true;
 		case R.id.action_compose:
 			openSignUp();
-			return true;
-		case R.id.action_forum:
-			openForum();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
