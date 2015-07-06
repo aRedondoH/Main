@@ -42,7 +42,6 @@ public class PeluGoMain extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.logo);
-
 		// display the logo during 5 secondes,
 		new CountDownTimer(5000, 1000) {
 			@Override
@@ -50,29 +49,11 @@ public class PeluGoMain extends Activity {
 			}
 
 			@Override
-			public void onFinish() {
-
-				String ua = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
-
-				setContentView(R.layout.actividad_principal);
-
+		public void onFinish() {
 				/* Google Admob advertising */
 				AdView mAdView = (AdView)findViewById(R.id.adView);
 				AdRequest adRequest = new AdRequest.Builder().build();
 				mAdView.loadAd(adRequest);
-
-				webView = (WebView) findViewById(R.id.webview);
-				webView.getSettings().setJavaScriptEnabled(true);
-				webView.getSettings().setUseWideViewPort(true);
-				webView.getSettings().setUserAgentString(ua);
-				webView.getSettings().setLoadsImagesAutomatically(true);
-				webView.getSettings().setBuiltInZoomControls(true);
-				webView.getSettings().setSaveFormData(true);
-				webView.getSettings().setDomStorageEnabled(true);
-				webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-				webView.getSettings().setSupportZoom(true);
-				webView.getSettings().setDisplayZoomControls(false);
-				webView.loadUrl("http://www.easymapmaker.com/map/dc04a04f6274ac349447fbc5803d0765");
 			}
 		}.start();
 	}
@@ -84,14 +65,20 @@ public class PeluGoMain extends Activity {
 	
 	//@SuppressLint("SetJavaScriptEnabled")
 	public void openMap() {
-		 Intent intent = new Intent(getApplicationContext(), MapaWebView.class);
+		Uri uri = Uri.parse("http://www.easymapmaker.com/map/dc04a04f6274ac349447fbc5803d0765");
+		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		startActivity(intent);
+
+		// Close activity when it is changed
+		this.finish();
 	}
 
 	public void openSignUp() {
 		// Switching to Register screen
 		Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
 		startActivity(i);
+		// Close activity when it is changed
+		this.finish();
 	}
 	
 	@SuppressWarnings("unused")

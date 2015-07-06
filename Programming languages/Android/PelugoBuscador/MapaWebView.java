@@ -25,38 +25,25 @@ public class MapaWebView extends Activity{
 	public static boolean flag = false;
 	final String baseUrl = "http://www.easymapmaker.com/map/dc04a04f6274ac349447fbc5803d0765";
 
+	private class WebViewClientImpl extends WebViewClient {
+
+		private Activity activity = null;
+
+		public WebViewClientImpl(Activity activity) {
+			this.activity = activity;
+		}
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+			return true;
+		}
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.actividad_principal);
-
-		/* Google Admob advertising */
-		AdView mAdView = (AdView)findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-
-		myWebView = (WebView) findViewById(R.id.webview);
-
-	            myWebView.post(new Runnable(){
-	        	@Override
-	            public void run() {
-
-					myWebView.getSettings().setJavaScriptEnabled(true);
-					myWebView.getSettings().setBuiltInZoomControls(true);
-					myWebView.getSettings().setSupportZoom(true);
-					myWebView.getSettings().setSupportMultipleWindows(true);
-					myWebView.getSettings().setLoadWithOverviewMode(true);
-					myWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-					myWebView.getSettings().setDomStorageEnabled(true);
-					myWebView.getSettings().setDatabaseEnabled(true);
-					WebSettings settings = myWebView.getSettings();
-					settings.setJavaScriptEnabled(true);
-					String newUa = "Foo/";
-					String newUA= "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0";
-					myWebView.getSettings().setUserAgentString(newUA);
-					myWebView.loadUrl(baseUrl);
-	            }
-	            });
 	}
+
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,11 +57,16 @@ public class MapaWebView extends Activity{
 		// Switching to Register screen
 		Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
 		startActivity(i);
+		// Close activity when it is changed
+		this.finish();
 	}
 
 	public void openMap() {
-		Intent intent = new Intent(getApplicationContext(), MapaWebView.class);
+		Uri uri = Uri.parse(baseUrl);
+		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		startActivity(intent);
+		// Close activity when it is changed
+		this.finish();
 	}
 
 	@Override
@@ -91,7 +83,5 @@ public class MapaWebView extends Activity{
 				return super.onOptionsItemSelected(item);
 		}
 	}
-
-
 
 }

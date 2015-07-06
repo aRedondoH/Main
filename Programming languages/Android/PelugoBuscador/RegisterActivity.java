@@ -64,6 +64,8 @@ public class RegisterActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+
+
 		// Set View to register.xml
 		setContentView(R.layout.register);
 		nameHS = (EditText) findViewById(R.id.hairdresserName);
@@ -193,15 +195,24 @@ public class RegisterActivity extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	//@SuppressLint("SetJavaScriptEnabled")
 	public void openMap() {
-		Intent intent = new Intent(getApplicationContext(), MapaWebView.class);
+		//Intent intent = new Intent(getApplicationContext(), MapaWebView.class);
+		//startActivity(intent);
+		Uri uri = Uri.parse("http://www.easymapmaker.com/map/dc04a04f6274ac349447fbc5803d0765");
+		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		startActivity(intent);
+
+		// Close activity when it is changed
+		this.finish();
 	}
 
 	public void openSignUp() {
 		// Switching to Register screen
 		Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
 		startActivity(i);
+		// Close activity when it is changed
+		this.finish();
 	}
 	
 	@SuppressLint("SetJavaScriptEnabled")
