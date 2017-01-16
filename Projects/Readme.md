@@ -1,7 +1,7 @@
 <snippet>
   <content><![CDATA[
 # ${1:Project Name}
-TODO: Write a project description
+EvaComp System
 ## Installation
 TODO: Describe the installation process
 ## Usage
