@@ -1,17 +1,30 @@
-# Project Title
+# EvaComp System
 
-One Paragraph of project description goes here
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+EvaComp system aims at evaluates competencies in institutions.  
 
 ### Prerequisites
 
 What things you need to install the software and how to install them
 
 ```
-Give examples
+## Operating Systems ##
+* Windows 10
+* Windows 8.1
+* Windows 8
+* Windows 7 SP1
+* Windows Server 2012 R2
+* Windows Server 2012
+* Windows Server 2008 R2 SP1
+
+## Server requirements ##
+* Visual Studio 2015
+* .Net 4.5
+
+## Database requirements ##
+* Entity Framework 6
+* Microsoft SQL Server 2012
+
+
 ```
 
 ### Installing
@@ -72,9 +85,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Alberto Redondo**
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
