@@ -25,8 +25,6 @@ What things you need to install the software and how to install them
 * Microsoft SQL Server 2012
 
 
-```
-
 ### Installing
 
 A step by step series of examples that tell you have to get a development env running
