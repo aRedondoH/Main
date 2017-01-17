@@ -6,7 +6,7 @@
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="Content/tablesResponstable.css" rel="stylesheet" />
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr") 
 
@@ -59,6 +59,7 @@
                             <li><a href="#">Evaluación</a></li>
                         </ul>
                     </li>
+                    <li class="active">@Html.ActionLink("Contactar", "Contact", "Home")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right"></ul>
             </div>
