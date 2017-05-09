@@ -1,13 +1,14 @@
-# Name: youParse.py
+# Name: downloadPlaylistMp3FromYoutube.py
 # Version: 1.5
-# Author: pantuts
+# Author: pantuts vs arh
 # Email: pantuts@gmail.com
-# Description: Parse URLs in Youtube User's Playlist (Video Playlist not Favorites)
+# Description: Parse URLs in Youtube User's Playlist and download in mp3 format
 # Use python3 and later
 # Agreement: You can use, modify, or redistribute this tool under
 # the terms of GNU General Public License (GPLv3).
 # This tool is for educational purposes only. Any damage you make will not affect the author.
 # Usage: python3 youParse.py youtubeURLhere
+# Example: python downloadPlaylistMp3FromYoutube.py 'https://www.youtube.com/watch?v=Ey_hgKCCYU4&list=RDQMsGiVnMp7oYc'
  
 import re
 import urllib.request
