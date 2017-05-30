@@ -1,0 +1,20 @@
+# Extract .tar.gz
+tar -zxvf {file.tar.gz}
+# Download youtube playlist in mp3 format
+python ~/Sync/MyThings/Code/Main/Projects/DownloadMp3PlaylistYoutube/downloadPlaylistMp3FromYoutubeThreatsV2.py 'playlistLink' 10
+# Convert .epub to .mobi (Kindle format)
+ebook-convert inputFile1.epub outputFile2.mobi
+# Check size folder
+du -sh file_path
+# Connect through ssh cluster
+ssh aredondo@lovelace.icmat.es
+
+# GitLab
+# Syncronice from remote(original project) to local
+git pull upstream master
+# Push from local to remote(original project)
+git push upstream master
+# Pull from remote (forked project)
+git pull
+# Push to remote (forked project)
+git push
