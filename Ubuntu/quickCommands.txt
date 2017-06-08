@@ -7,7 +7,9 @@ ebook-convert inputFile1.epub outputFile2.mobi
 # Check size folder
 du -sh file_path
 # Connect through ssh cluster
-ssh aredondo@lovelace.icmat.es
+ssh aredondo@lovelace.icmat.esy
+# list directories sort by date, long version
+ls -lht
 
 # GitLab
 # Syncronice from remote(original project) to local
