@@ -10,6 +10,8 @@ du -sh file_path
 ssh aredondo@lovelace.icmat.esy
 # list directories sort by date, long version
 ls -lht
+# Check weather Madrid
+curl wttr.in/madrid
 
 # GitLab
 # Syncronice from remote(original project) to local
