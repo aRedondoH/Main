@@ -7,11 +7,13 @@ ebook-convert inputFile1.epub outputFile2.mobi
 # Check size folder
 du -sh file_path
 # Connect through ssh cluster
-ssh aredondo@lovelace.icmat.esy
+ssh aredondo@lovelace.icmat.es
 # list directories sort by date, long version
 ls -lht
 # Check weather Madrid
 curl wttr.in/madrid
+# Latex diff
+latexdiff --verbose doc1.tex doc2.tex > output.tex
 
 # GitLab
 # Syncronice from remote(original project) to local
