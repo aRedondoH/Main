@@ -6,20 +6,5 @@ python ~/Sync/MyThings/Code/Main/Projects/DownloadMp3PlaylistYoutube/downloadPla
 ebook-convert inputFile1.epub outputFile2.mobi
 # Check size folder
 du -sh file_path
-# list directories sort by date, long version
-ls -lht
-# Check weather Madrid
-curl wttr.in/madrid
-# Latex diff
-latexdiff --verbose doc1.tex doc2.tex > output.tex
-
 # Connect through ssh cluster
 ssh aredondo@lovelace.icmat.es
-# Tunnel to the cluster
-ssh -N -L localhost:9999:lovelace.icmat.es:443 aredondo@lovelace.icmat.es
-# Interactive sesion
-qrsh
-# Monitoring jobs
-qstat [-j][-f][-r]
-# Cancel job
-qdel [pidJob]
