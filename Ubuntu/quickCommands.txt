@@ -1,5 +1,7 @@
 # Extract .tar.gz
 tar -zxvf {file.tar.gz}
+# Download one song youtube
+youtube-dl -cit -x --audio-format mp3 urlSong
 # Download youtube playlist in mp3 format
 python ~/Sync/MyThings/Code/Main/Projects/DownloadMp3PlaylistYoutube/downloadPlaylistMp3FromYoutubeThreatsV2.py 'playlistLink' 10
 # Convert .epub to .mobi (Kindle format)
@@ -12,6 +14,18 @@ ls -lht
 curl wttr.in/madrid
 # Latex diff
 latexdiff --verbose doc1.tex doc2.tex > output.tex
+# Find files by name and ignore type
+find -iname "query"
+# Find files with a specific extension
+find / -type f -name "*.conf"
+# Find empty files
+find . -empty -ls
+# Check ip or ips location in a map
+iponmap ip1 ip2
+# Airdroid ip
+http://192.168.44.24:8888/
+# Check library installed
+ldconfig -p | grep atlas
 
 # Connect through ssh cluster
 ssh aredondo@lovelace.icmat.es
@@ -23,3 +37,10 @@ qrsh
 qstat [-j][-f][-r]
 # Cancel job
 qdel [pidJob]
+# Copy file remote to local
+scp -r aredondo@lovelace.icmat.es:/LUSTRE/users/aredondo/file .
+# Copy file local to remote
+scp -r file aredondo@lovelace.icmat.es:.
+
+# Push to Gitlab
+git push -u origin master
